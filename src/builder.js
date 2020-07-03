@@ -9,12 +9,13 @@ export default class Builder {
         "--no-sandbox",
         "--disable-setui-sandbox",
         "--disable-web-security",
+        "--start-maximized",
       ],
     };
     const browser = await puppeteer.launch(launchOptions);
     const page = await browser.newPage();
     const extendedPage = new Builder(page);
-    await page.setDefaultTimeout(10000);
+    await page.setDefaultTimeout(20000);
     //Diffrent ViewPorts
     switch (viewport) {
       case "Mobile":
@@ -26,7 +27,7 @@ export default class Builder {
         await page.emulate(tabletViewport);
         break;
       case "Desktop":
-        await page.setViewport({ width: 800, height: 600 });
+        await page.setViewport({ width: 1920, height: 1080 });
         break;
       default:
         throw new Error("Supported devices are only Mobile | Tablet | Desktop");
@@ -40,5 +41,56 @@ export default class Builder {
   }
   constructor(page) {
     this.page = page;
+  }
+  //waits for element to appear and clicks on it
+  async waitAndClick(selector) {
+    await this.page.waitForSelector(selector);
+    await this.page.click(selector);
+  }
+  //waits for element to appear and types into it
+  async waitAndType(selector, text) {
+    await this.page.waitForSelector(selector);
+    await this.page.type(selector, text);
+  }
+  //gets text for selector
+  async getText(selector) {
+    await this.page.waitForSelector(selector);
+    const text = await this.page.$eval(selector, (e) => e.innerHTML);
+    return text;
+  }
+  //returns number on selectors on page
+  async getCount(selector) {
+    await this.page.waitForSelector(selector);
+    const count = await this.page.$$eval(selector, (items) => items.length);
+    return count;
+  }
+  //waits for xpath to appear and clicks on it use only if selecors isnt available
+  async waitForXpathClick(xpath) {
+    await this.page.waitForXpath(xpath);
+    const elements = await this.page.$x(xpath);
+    if (elements.length > 1) {
+      console.warn("waitForXpathClick returned more than one result");
+    }
+    await element[0].click();
+  }
+  //returns visibility of selector
+  async isElementVisible(selector) {
+    let visible = true;
+    await this.page
+      .waitForSelector(selector, { visible: true, timeout: 3000 })
+      .catch(() => {
+        visible = false;
+      });
+    return visible;
+  }
+  //returns visibility of xpath
+  async isXpathVisible(selector) {
+    let visible = true;
+    await this.page
+      .waitForXpath(selector, { visible: true, timeout: 3000 })
+      .catch(() => {
+        visible = false;
+      });
+    return visible;
   }
 }

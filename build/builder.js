@@ -21,12 +21,12 @@ var Builder = function () {
       var launchOptions = {
         headless: true,
         slowMo: 0,
-        args: ["--no-sandbox", "--disable-setui-sandbox", "--disable-web-security"]
+        args: ["--no-sandbox", "--disable-setui-sandbox", "--disable-web-security", "--start-maximized"]
       };
       var browser = await _puppeteer2.default.launch(launchOptions);
       var page = await browser.newPage();
       var extendedPage = new Builder(page);
-      await page.setDefaultTimeout(10000);
+      await page.setDefaultTimeout(20000);
       //Diffrent ViewPorts
       switch (viewport) {
         case "Mobile":
@@ -38,7 +38,7 @@ var Builder = function () {
           await page.emulate(tabletViewport);
           break;
         case "Desktop":
-          await page.setViewport({ width: 800, height: 600 });
+          await page.setViewport({ width: 1920, height: 1080 });
           break;
         default:
           throw new Error("Supported devices are only Mobile | Tablet | Desktop");
@@ -57,6 +57,80 @@ var Builder = function () {
 
     this.page = page;
   }
+  //waits for element to appear and clicks on it
+
+
+  _createClass(Builder, [{
+    key: "waitAndClick",
+    value: async function waitAndClick(selector) {
+      await this.page.waitForSelector(selector);
+      await this.page.click(selector);
+    }
+    //waits for element to appear and types into it
+
+  }, {
+    key: "waitAndType",
+    value: async function waitAndType(selector, text) {
+      await this.page.waitForSelector(selector);
+      await this.page.type(selector, text);
+    }
+    //gets text for selector
+
+  }, {
+    key: "getText",
+    value: async function getText(selector) {
+      await this.page.waitForSelector(selector);
+      var text = await this.page.$eval(selector, function (e) {
+        return e.innerHTML;
+      });
+      return text;
+    }
+    //returns number on selectors on page
+
+  }, {
+    key: "getCount",
+    value: async function getCount(selector) {
+      await this.page.waitForSelector(selector);
+      var count = await this.page.$$eval(selector, function (items) {
+        return items.length;
+      });
+      return count;
+    }
+    //waits for xpath to appear and clicks on it use only if selecors isnt available
+
+  }, {
+    key: "waitForXpathClick",
+    value: async function waitForXpathClick(xpath) {
+      await this.page.waitForXpath(xpath);
+      var elements = await this.page.$x(xpath);
+      if (elements.length > 1) {
+        console.warn("waitForXpathClick returned more than one result");
+      }
+      await element[0].click();
+    }
+    //returns visibility of selector
+
+  }, {
+    key: "isElementVisible",
+    value: async function isElementVisible(selector) {
+      var visible = true;
+      await this.page.waitForSelector(selector, { visible: true, timeout: 3000 }).catch(function () {
+        visible = false;
+      });
+      return visible;
+    }
+    //returns visibility of xpath
+
+  }, {
+    key: "isXpathVisible",
+    value: async function isXpathVisible(selector) {
+      var visible = true;
+      await this.page.waitForXpath(selector, { visible: true, timeout: 3000 }).catch(function () {
+        visible = false;
+      });
+      return visible;
+    }
+  }]);
 
   return Builder;
 }();
