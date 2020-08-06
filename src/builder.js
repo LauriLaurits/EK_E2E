@@ -3,7 +3,8 @@ import puppeteer from "puppeteer";
 export default class Builder {
   static async build(viewport) {
     const launchOptions = {
-      headless: true,
+     // product: 'firefox',
+      headless: false,
       slowMo: 0,
       args: [
         "--no-sandbox",
@@ -15,7 +16,8 @@ export default class Builder {
     const browser = await puppeteer.launch(launchOptions);
     const page = await browser.newPage();
     const extendedPage = new Builder(page);
-    await page.setDefaultTimeout(20000);
+    page.setDefaultTimeout(20000);
+    page.setDefaultNavigationTimeout(20000)
     //Diffrent ViewPorts
     switch (viewport) {
       case "Mobile":
@@ -27,6 +29,7 @@ export default class Builder {
         await page.emulate(tabletViewport);
         break;
       case "Desktop":
+        //For max viewport according to window size const browser = await puppeteer.launch({defaultViewport: null}); 
         await page.setViewport({ width: 1920, height: 1080 });
         break;
       default:
@@ -46,6 +49,11 @@ export default class Builder {
   async waitAndClick(selector) {
     await this.page.waitForSelector(selector);
     await this.page.click(selector);
+  }
+  // waits for element and clicks 2 times
+  async waitAndClickTwo(selector) {
+    await this.page.waitForSelector(selector);
+    await this.page.click(selector, { clickCount: 2 });
   }
   //waits for element to appear and types into it
   async waitAndType(selector, text) {

@@ -19,14 +19,16 @@ var Builder = function () {
     key: "build",
     value: async function build(viewport) {
       var launchOptions = {
-        headless: true,
+        // product: 'firefox',
+        headless: false,
         slowMo: 0,
         args: ["--no-sandbox", "--disable-setui-sandbox", "--disable-web-security", "--start-maximized"]
       };
       var browser = await _puppeteer2.default.launch(launchOptions);
       var page = await browser.newPage();
       var extendedPage = new Builder(page);
-      await page.setDefaultTimeout(20000);
+      page.setDefaultTimeout(20000);
+      page.setDefaultNavigationTimeout(20000);
       //Diffrent ViewPorts
       switch (viewport) {
         case "Mobile":
@@ -38,6 +40,7 @@ var Builder = function () {
           await page.emulate(tabletViewport);
           break;
         case "Desktop":
+          //For max viewport according to window size const browser = await puppeteer.launch({defaultViewport: null}); 
           await page.setViewport({ width: 1920, height: 1080 });
           break;
         default:
@@ -65,6 +68,14 @@ var Builder = function () {
     value: async function waitAndClick(selector) {
       await this.page.waitForSelector(selector);
       await this.page.click(selector);
+    }
+    // waits for element and clicks 2 times
+
+  }, {
+    key: "waitAndClickTwo",
+    value: async function waitAndClickTwo(selector) {
+      await this.page.waitForSelector(selector);
+      await this.page.click(selector, { clickCount: 2 });
     }
     //waits for element to appear and types into it
 
