@@ -31,6 +31,9 @@ describe.skip("Tests for adding OTC product to shopping cart", () => {
       await homepage.navigation();
       await page.waitAndClick(".btn-addtocart");
       await page.waitForSelector("#verify-addtocart");
+      await page.waitForSelector("#verify-addtocart > div > div.form > fieldset:nth-child(1) > div:nth-child(1) > div > select");
+      await page.click("#verify-addtocart > div > div.form > fieldset:nth-child(1) > div:nth-child(1) > div > div.automatic-dropdown > div");
+      await page.select("#verify-addtocart > div > div.form > fieldset:nth-child(1) > div:nth-child(1) > div > select", "Kuni 1");
       /* await page.waitAndClick("#verify-addtocart .automatic-dropdown div");
        await page.select("select#age", "23");
       await page.waitAndClickTwo(".btn.tocart.type02"); */
