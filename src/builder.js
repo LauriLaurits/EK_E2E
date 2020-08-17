@@ -101,4 +101,7 @@ export default class Builder {
       });
     return visible;
   }
+  async getHref(selector) {
+    return await this.page.$$eval(selector, anchors => [].map.call(anchors, a => a.href));
+  }
 }

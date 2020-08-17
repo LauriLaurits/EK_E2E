@@ -141,6 +141,15 @@ var Builder = function () {
       });
       return visible;
     }
+  }, {
+    key: "getHref",
+    value: async function getHref(selector) {
+      return await this.page.$$eval(selector, function (anchors) {
+        return [].map.call(anchors, function (a) {
+          return a.href;
+        });
+      });
+    }
   }]);
 
   return Builder;
