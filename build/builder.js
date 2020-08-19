@@ -67,7 +67,11 @@ var Builder = function () {
     key: "waitAndClick",
     value: async function waitAndClick(selector) {
       await this.page.waitForSelector(selector);
-      await this.page.click(selector);
+      try {
+        await this.page.click(selector);
+      } catch (error) {
+        console.log("error clicking " + selector + " : " + error);
+      }
     }
     // waits for element and clicks 2 times
 
@@ -110,14 +114,14 @@ var Builder = function () {
     //waits for xpath to appear and clicks on it use only if selecors isnt available
 
   }, {
-    key: "waitForXpathClick",
-    value: async function waitForXpathClick(xpath) {
-      await this.page.waitForXpath(xpath);
+    key: "waitForXPathAndClick",
+    value: async function waitForXPathAndClick(xpath) {
+      await this.page.waitForXPath(xpath);
       var elements = await this.page.$x(xpath);
       if (elements.length > 1) {
-        console.warn("waitForXpathClick returned more than one result");
+        console.warn("waitForXPathAndClick returned more than one result");
       }
-      await element[0].click();
+      await elements[0].click();
     }
     //returns visibility of selector
 
@@ -141,6 +145,8 @@ var Builder = function () {
       });
       return visible;
     }
+    //returns link
+
   }, {
     key: "getHref",
     value: async function getHref(selector) {
@@ -149,6 +155,24 @@ var Builder = function () {
           return a.href;
         });
       });
+    }
+    //helper function for click()
+
+  }, {
+    key: "clickHelp",
+    value: async function clickHelp(selector) {
+      await this.page.waitForSelector(selector);
+      await this.page.evaluate(function (selector) {
+        return document.querySelector(selector).click();
+      }, selector);
+    }
+    //wait for element to have a certain value
+
+  }, {
+    key: "waitForValue",
+    value: async function waitForValue(selector, value) {
+      await this.page.waitForFunction(document.getElementById(selector).value != value);
+      return true;
     }
   }]);
 

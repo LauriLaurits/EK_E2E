@@ -36,6 +36,13 @@ let constants = {
     aadress: ".form-row:nth-of-type(7) [type]",
     zipCode: ".form-row:nth-of-type(8) [type]",
     submitSecond: "#checkout-root > div > div.frame-checkout-content > div > div > div > div > div.layout-sidebar-primary > ul > li.list-progress-item.current.ListProgressItem-item-0-2-5 > div.list-progress-item-content.ListProgressItem-content-0-2-4 > div > ul > li"
+  },
+  unSusubscribe: {
+    backendUrl: "https://www.staging.apotheka.ee/MMadmin/",
+    magentoBackendUsername: "lauri@upitech.ee",
+    magentoBackendPassword: "b8thLCzBP17KaaGCeDwm",
+    subscribePage: "https://www.staging.apotheka.ee/newsletter/manage/"
+
   }
   
 };

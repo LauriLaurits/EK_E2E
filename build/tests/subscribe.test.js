@@ -18,11 +18,14 @@ var _LoginPage2 = _interopRequireDefault(_LoginPage);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var constants = require("./../../constants");
+
 //TODO
 //Vaja teha kasutaja saada tema email, alpi id
 //Creatimisel lisada talle subscription
 //Minna unsubscribe lingile ja see subscription maha võtta
 // Kontrollida kas subscription läks maha
+//import puppeteer from "puppeteer";
 describe.only("Newsletter subscribe/unsubscribe test", function () {
   var page = void 0;
   var homepage = void 0;
@@ -33,65 +36,57 @@ describe.only("Newsletter subscribe/unsubscribe test", function () {
     homepage = new _HomePage2.default(page);
     loginPage = new _LoginPage2.default(page);
   });
+
   after(async function () {
+    // Delete Customer from Magento
+    await loginPage.deleteCustomerFromMagento(constants.unSusubscribe.backendUrl);
+    //Delete Customer from TestALPI
+    await loginPage.deleteCustomerFromAlpi();
+    // Close Browser
     await page.close();
   });
 
-  describe("Create New Customer ", function () {
-    (0, _mochaSteps.step)("Should go to Staging Apotheka homepage and click Login Button and Login with Mobile-ID", async function () {
-      await page.goto("https:/staging.apotheka.ee");
-      await page.waitAndClick("#registration_link");
-      await page.waitForSelector("#horizontal_tabs");
-      await page.waitAndClick("#mobile-id-input");
-      await page.waitAndType("#mobile-id-input", "37200000566");
-      await page.click("#mobileid-submit");
-      await page.isElementVisible("#mobileid-verification");
-      (0, _chai.expect)((await page.isElementVisible("#mobileid-verification"))).to.be.true;
-      await page.waitForSelector(".create.fieldset.info");
+  describe("Create New Customer and  ", function () {
+    (0, _mochaSteps.step)("Step 1: Create new customer and test if he/she has subscription ", async function () {
+      //Make New Customer
+      await loginPage.newCustomer();
+      await page.waitForSelector(".box-newsletter");
+      await page.goto(constants.unSusubscribe.subscribePage);
+      //Test that customer has subscription for Apotheka, Petcity, ApothekaBeauty
+      var subscriptionApotheka = await loginPage.getSubscriptionValue('/html//input[@id="subscription[ApothekaEE]"]');
+      var subscriptionPetcity = await loginPage.getSubscriptionValue('/html//input[@id="subscription[PetCityEE]"]');
+      var subscriptionApothekaBeauty = await loginPage.getSubscriptionValue('/html//input[@id="subscription[BeautyEE]"]');
+      (0, _chai.expect)(subscriptionApotheka).to.be.true;
+      (0, _chai.expect)(subscriptionPetcity).to.be.true;
+      (0, _chai.expect)(subscriptionApothekaBeauty).to.be.true;
     });
-    (0, _mochaSteps.step)("Should fill out register form with email and phone number", async function () {
-      await page.waitAndClick("#email_address");
-      await page.waitAndType("#email_address", "test@test.ee");
-      await page.waitAndClick(".create.fieldset.info input#telephone");
-      await page.waitAndType(".create.fieldset.info input#telephone", "00000566");
-      await page.waitAndClick("#terms");
-      await page.waitAndClick("#submit");
-      //await page.waitForSelector("#clientcard-popup");
-      //await page.waitAndClick("#terms_agreement");
-      //await page.waitAndClick(".answer_yes.btn.new_clientcard_answer.primary");
-    });
-    //step("Step 2: Get ALPI id ", async () => {
+    (0, _mochaSteps.step)("Step 2: Get ALPI ID, construct unsubscribe link and click on unsubscribe. ", async function () {
+      var alpiID = await loginPage.getAlpiID(constants.unSusubscribe.backendUrl, constants.unSusubscribe.magentoBackendUsername, constants.unSusubscribe.magentoBackendPassword);
+      var unsubscribeApotheka = "https://staging-sas.upitech.ee/#/unsubscribe?email=test@test.ee&alpiCustomerId=" + alpiID + "&language=et&brandCode=ApothekaEE";
+      var unsubscribePetcity = "https://staging-sas.upitech.ee/#/unsubscribe?email=test@test.ee&alpiCustomerId=" + alpiID + "&language=et&brandCode=PetCityEE";
+      var unsubscribeApothekaBeauty = "https://staging-sas.upitech.ee/#/unsubscribe?email=test@test.ee&alpiCustomerId=" + alpiID + "&language=et&brandCode=BeautyEE";
 
-    //});
-    (0, _mochaSteps.step)("Step 3: Log in to Magento backend and get Customer Data", async function () {
-      await page.goto("https://www.staging.apotheka.ee/MMadmin/", {
-        waitUntil: "networkidle0"
-      });
-      await page.waitAndClick("#username");
-      await page.waitAndType("#username", "lauri@upitech.ee");
-      await page.waitAndClick("#login");
-      await page.waitAndType("#login", "b8thLCzBP17KaaGCeDwm");
-      await page.waitAndClick(".action-primary");
-      await page.waitAndClick(".action-close");
-      //await page.waitAndClick(".item-customer-manage.level-1 a");
-      var customerUrl = await page.getHref(".item-customer-manage.level-1 a");
-      await page.goto(customerUrl[0]);
+      await page.goto(unsubscribeApotheka);
+      await page.waitForSelector(".layout-unsubscribe.ng-scope");
+      await page.waitAndClick(".btn.ng-binding.primary");
 
-      var getID = await page.getText("tr:nth-of-type(2) > td:nth-of-type(2) > .data-grid-cell-content");
+      await page.goto(unsubscribePetcity);
+      await page.waitForSelector(".layout-unsubscribe.ng-scope");
+      await page.waitAndClick(".btn.ng-binding.primary");
 
-      await page.goto("https://www.staging.apotheka.ee/MMadmin/customer/index/edit/id/" + getID);
-      console.log(getID);
-      //Click edit last created customer
-      //await page.goto("https://www.staging.apotheka.ee/MMadmin/customer/index/edit/id/279/");
-      //console.log(ggg);
-      //await page.waitAndClick("#container > div > div.admin__data-grid-wrap > table > tbody > tr:nth-child(2) > td.data-grid-actions-cell > a");
-      //wait for last customer to load
-      /*await page.waitForSelector(".admin__page-nav");
-        const getName = await page.getText("h1.page-title");
-      expect(getName).to.include("MARY ÄNN O’CONNEŽ-ŠUSLIK TESTNUMBER");
-      
-      */
-      await page.waitFor(3000);
+      await page.goto(unsubscribeApothekaBeauty);
+      await page.waitForSelector(".layout-unsubscribe.ng-scope");
+      await page.waitAndClick(".btn.ng-binding.primary");
+      // Go to unsubscribe page
+      await page.goto(constants.unSusubscribe.subscribePage);
+
+      var subscriptionApotheka = await loginPage.getSubscriptionValue('/html//input[@id="subscription[ApothekaEE]"]');
+      var subscriptionPetcity = await loginPage.getSubscriptionValue('/html//input[@id="subscription[PetCityEE]"]');
+      var subscriptionApothekaBeauty = await loginPage.getSubscriptionValue('/html//input[@id="subscription[BeautyEE]"]');
+
+      (0, _chai.expect)(subscriptionApotheka).to.be.false;
+      (0, _chai.expect)(subscriptionPetcity).to.be.false;
+      //expect(subscriptionApothekaBeauty).to.be.false;
     });
   });
-}); //import puppeteer from "puppeteer";
+});

@@ -7,6 +7,8 @@ import { expect } from "chai";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 
+let constants = require("./../../constants");
+
 //TODO
 //Vaja teha kasutaja saada tema email, alpi id
 //Creatimisel lisada talle subscription
@@ -22,76 +24,59 @@ describe.only("Newsletter subscribe/unsubscribe test", () => {
     homepage = new HomePage(page);
     loginPage = new LoginPage(page);
   });
+  
   after(async () => {
+    // Delete Customer from Magento
+    await loginPage.deleteCustomerFromMagento(constants.unSusubscribe.backendUrl);
+    //Delete Customer from TestALPI
+    await loginPage.deleteCustomerFromAlpi();
+    // Close Browser
     await page.close();
   });
 
-  describe("Create New Customer ", () => {
-    step(
-      "Should go to Staging Apotheka homepage and click Login Button and Login with Mobile-ID",
-      async () => {
-        await page.goto("https:/staging.apotheka.ee");
-        await page.waitAndClick("#registration_link");
-        await page.waitForSelector("#horizontal_tabs");
-        await page.waitAndClick("#mobile-id-input");
-        await page.waitAndType("#mobile-id-input", "37200000566");
-        await page.click("#mobileid-submit");
-        await page.isElementVisible("#mobileid-verification");
-        expect(await page.isElementVisible("#mobileid-verification")).to.be
-          .true;
-        await page.waitForSelector(".create.fieldset.info");
-      }
-    );
-    step(
-      "Should fill out register form with email and phone number",
-      async () => {
-        await page.waitAndClick("#email_address");
-        await page.waitAndType("#email_address", "test@test.ee");
-        await page.waitAndClick(".create.fieldset.info input#telephone");
-        await page.waitAndType(
-          ".create.fieldset.info input#telephone",
-          "00000566"
-        );
-        await page.waitAndClick("#terms");
-        await page.waitAndClick("#submit");
-        //await page.waitForSelector("#clientcard-popup");
-        //await page.waitAndClick("#terms_agreement");
-        //await page.waitAndClick(".answer_yes.btn.new_clientcard_answer.primary");
+  describe("Create New Customer and  ", () => {
+      step("Step 1: Create new customer and test if he/she has subscription ", async () => {
+          //Make New Customer
+          await loginPage.newCustomer();
+          await page.waitForSelector(".box-newsletter");
+          await page.goto(constants.unSusubscribe.subscribePage);
+          //Test that customer has subscription for Apotheka, Petcity, ApothekaBeauty
+          const subscriptionApotheka = await loginPage.getSubscriptionValue('/html//input[@id="subscription[ApothekaEE]"]');
+          const subscriptionPetcity = await loginPage.getSubscriptionValue('/html//input[@id="subscription[PetCityEE]"]');
+          const subscriptionApothekaBeauty = await loginPage.getSubscriptionValue('/html//input[@id="subscription[BeautyEE]"]');
+          expect(subscriptionApotheka).to.be.true;
+          expect(subscriptionPetcity).to.be.true;
+          expect(subscriptionApothekaBeauty).to.be.true;
       });
-    //step("Step 2: Get ALPI id ", async () => {
+      step("Step 2: Get ALPI ID, construct unsubscribe link and click on unsubscribe. ", async () => {
+        const alpiID = await loginPage.getAlpiID(constants.unSusubscribe.backendUrl, constants.unSusubscribe.magentoBackendUsername, constants.unSusubscribe.magentoBackendPassword);
+        const unsubscribeApotheka = "https://staging-sas.upitech.ee/#/unsubscribe?email=test@test.ee&alpiCustomerId="+alpiID+"&language=et&brandCode=ApothekaEE";
+        const unsubscribePetcity = "https://staging-sas.upitech.ee/#/unsubscribe?email=test@test.ee&alpiCustomerId="+alpiID+"&language=et&brandCode=PetCityEE";
+        const unsubscribeApothekaBeauty = "https://staging-sas.upitech.ee/#/unsubscribe?email=test@test.ee&alpiCustomerId="+alpiID+"&language=et&brandCode=BeautyEE";
 
-    //});
-    step("Step 3: Log in to Magento backend and get Customer Data", async () => {
-        await page.goto("https://www.staging.apotheka.ee/MMadmin/", {
-          waitUntil: "networkidle0",
-        });
-        await page.waitAndClick("#username");
-        await page.waitAndType("#username", "lauri@upitech.ee");
-        await page.waitAndClick("#login");
-        await page.waitAndType("#login", "b8thLCzBP17KaaGCeDwm");
-        await page.waitAndClick(".action-primary");
-        await page.waitAndClick(".action-close");
-        //await page.waitAndClick(".item-customer-manage.level-1 a");
-        const customerUrl = await page.getHref(".item-customer-manage.level-1 a");
-        await page.goto(customerUrl[0]);
+        await page.goto(unsubscribeApotheka);
+        await page.waitForSelector(".layout-unsubscribe.ng-scope");
+        await page.waitAndClick(".btn.ng-binding.primary");
 
-        const getID = await page.getText("tr:nth-of-type(2) > td:nth-of-type(2) > .data-grid-cell-content");
+        await page.goto(unsubscribePetcity);
+        await page.waitForSelector(".layout-unsubscribe.ng-scope");
+        await page.waitAndClick(".btn.ng-binding.primary");
 
-        await page.goto("https://www.staging.apotheka.ee/MMadmin/customer/index/edit/id/"+ getID);
-        console.log(getID);
-        //Click edit last created customer
-        //await page.goto("https://www.staging.apotheka.ee/MMadmin/customer/index/edit/id/279/");
-        //console.log(ggg);
-        //await page.waitAndClick("#container > div > div.admin__data-grid-wrap > table > tbody > tr:nth-child(2) > td.data-grid-actions-cell > a");
-        //wait for last customer to load
-        /*await page.waitForSelector(".admin__page-nav");
+        await page.goto(unsubscribeApothekaBeauty);
+        await page.waitForSelector(".layout-unsubscribe.ng-scope");
+        await page.waitAndClick(".btn.ng-binding.primary");
+        // Go to unsubscribe page
+        await page.goto(constants.unSusubscribe.subscribePage);
 
-        const getName = await page.getText("h1.page-title");
-        expect(getName).to.include("MARY ÄNN O’CONNEŽ-ŠUSLIK TESTNUMBER");
-        
-        */
-        await page.waitFor(3000);
+        const subscriptionApotheka = await loginPage.getSubscriptionValue('/html//input[@id="subscription[ApothekaEE]"]');
+        const subscriptionPetcity = await loginPage.getSubscriptionValue('/html//input[@id="subscription[PetCityEE]"]');
+        const subscriptionApothekaBeauty = await loginPage.getSubscriptionValue('/html//input[@id="subscription[BeautyEE]"]');
+          
+        expect(subscriptionApotheka).to.be.false;
+        expect(subscriptionPetcity).to.be.false;
+        //expect(subscriptionApothekaBeauty).to.be.false;
       });
-   
-  });
+    });
 });
+   
+ 

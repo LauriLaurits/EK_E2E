@@ -48,7 +48,11 @@ export default class Builder {
   //waits for element to appear and clicks on it
   async waitAndClick(selector) {
     await this.page.waitForSelector(selector);
-    await this.page.click(selector);
+    try {
+      await this.page.click(selector);
+    } catch (error) {
+    console.log("error clicking " + selector + " : " + error );
+  }
   }
   // waits for element and clicks 2 times
   async waitAndClickTwo(selector) {
@@ -73,13 +77,13 @@ export default class Builder {
     return count;
   }
   //waits for xpath to appear and clicks on it use only if selecors isnt available
-  async waitForXpathClick(xpath) {
-    await this.page.waitForXpath(xpath);
+  async waitForXPathAndClick(xpath) {
+    await this.page.waitForXPath(xpath);
     const elements = await this.page.$x(xpath);
     if (elements.length > 1) {
-      console.warn("waitForXpathClick returned more than one result");
+      console.warn("waitForXPathAndClick returned more than one result");
     }
-    await element[0].click();
+    await elements[0].click();
   }
   //returns visibility of selector
   async isElementVisible(selector) {
@@ -101,7 +105,19 @@ export default class Builder {
       });
     return visible;
   }
+  //returns link
   async getHref(selector) {
     return await this.page.$$eval(selector, anchors => [].map.call(anchors, a => a.href));
   }
+  //helper function for click()
+  async clickHelp(selector) {
+    await this.page.waitForSelector(selector);
+    await this.page.evaluate((selector) => document.querySelector(selector).click(), selector);
+  }
+  //wait for element to have a certain value
+  async waitForValue(selector, value) {
+    await this.page.waitForFunction(document.getElementById(selector).value != value);
+    return true;
+  }
+
 }
