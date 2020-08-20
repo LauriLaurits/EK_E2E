@@ -18,14 +18,9 @@ var _LoginPage2 = _interopRequireDefault(_LoginPage);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var constants = require("./../../constants");
+var constants = require("./../../constants"); //import puppeteer from "puppeteer";
 
-//TODO
-//Vaja teha kasutaja saada tema email, alpi id
-//Creatimisel lisada talle subscription
-//Minna unsubscribe lingile ja see subscription maha võtta
-// Kontrollida kas subscription läks maha
-//import puppeteer from "puppeteer";
+
 describe.only("Newsletter subscribe/unsubscribe test", function () {
   var page = void 0;
   var homepage = void 0;
@@ -61,29 +56,31 @@ describe.only("Newsletter subscribe/unsubscribe test", function () {
       (0, _chai.expect)(subscriptionApothekaBeauty).to.be.true;
     });
     (0, _mochaSteps.step)("Step 2: Get ALPI ID, construct unsubscribe link and click on unsubscribe. ", async function () {
+      //Get ALPI id for last generated Customer
       var alpiID = await loginPage.getAlpiID(constants.unSusubscribe.backendUrl, constants.unSusubscribe.magentoBackendUsername, constants.unSusubscribe.magentoBackendPassword);
+      //Construct SaS unsubscribe links
       var unsubscribeApotheka = "https://staging-sas.upitech.ee/#/unsubscribe?email=test@test.ee&alpiCustomerId=" + alpiID + "&language=et&brandCode=ApothekaEE";
       var unsubscribePetcity = "https://staging-sas.upitech.ee/#/unsubscribe?email=test@test.ee&alpiCustomerId=" + alpiID + "&language=et&brandCode=PetCityEE";
       var unsubscribeApothekaBeauty = "https://staging-sas.upitech.ee/#/unsubscribe?email=test@test.ee&alpiCustomerId=" + alpiID + "&language=et&brandCode=BeautyEE";
-
+      //Go to Apotheka SaS unsubscribe link and click unsubscribe
       await page.goto(unsubscribeApotheka);
       await page.waitForSelector(".layout-unsubscribe.ng-scope");
       await page.waitAndClick(".btn.ng-binding.primary");
-
+      //Go to Petcity SaS unsubscribe link and click unsubscribe
       await page.goto(unsubscribePetcity);
       await page.waitForSelector(".layout-unsubscribe.ng-scope");
       await page.waitAndClick(".btn.ng-binding.primary");
-
+      //Go to ApothekaBeauty SaS unsubscribe link and click unsubscribe
       await page.goto(unsubscribeApothekaBeauty);
       await page.waitForSelector(".layout-unsubscribe.ng-scope");
       await page.waitAndClick(".btn.ng-binding.primary");
       // Go to unsubscribe page
       await page.goto(constants.unSusubscribe.subscribePage);
-
+      //Get subscription values
       var subscriptionApotheka = await loginPage.getSubscriptionValue('/html//input[@id="subscription[ApothekaEE]"]');
       var subscriptionPetcity = await loginPage.getSubscriptionValue('/html//input[@id="subscription[PetCityEE]"]');
       var subscriptionApothekaBeauty = await loginPage.getSubscriptionValue('/html//input[@id="subscription[BeautyEE]"]');
-
+      //Expect subscriptions to be false
       (0, _chai.expect)(subscriptionApotheka).to.be.false;
       (0, _chai.expect)(subscriptionPetcity).to.be.false;
       //expect(subscriptionApothekaBeauty).to.be.false;

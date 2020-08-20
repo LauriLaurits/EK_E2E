@@ -9,11 +9,6 @@ import LoginPage from "../pages/LoginPage";
 
 let constants = require("./../../constants");
 
-//TODO
-//Vaja teha kasutaja saada tema email, alpi id
-//Creatimisel lisada talle subscription
-//Minna unsubscribe lingile ja see subscription maha võtta
-// Kontrollida kas subscription läks maha
 describe.only("Newsletter subscribe/unsubscribe test", () => {
   let page;
   let homepage;
@@ -49,29 +44,31 @@ describe.only("Newsletter subscribe/unsubscribe test", () => {
           expect(subscriptionApothekaBeauty).to.be.true;
       });
       step("Step 2: Get ALPI ID, construct unsubscribe link and click on unsubscribe. ", async () => {
+          //Get ALPI id for last generated Customer
         const alpiID = await loginPage.getAlpiID(constants.unSusubscribe.backendUrl, constants.unSusubscribe.magentoBackendUsername, constants.unSusubscribe.magentoBackendPassword);
+        //Construct SaS unsubscribe links
         const unsubscribeApotheka = "https://staging-sas.upitech.ee/#/unsubscribe?email=test@test.ee&alpiCustomerId="+alpiID+"&language=et&brandCode=ApothekaEE";
         const unsubscribePetcity = "https://staging-sas.upitech.ee/#/unsubscribe?email=test@test.ee&alpiCustomerId="+alpiID+"&language=et&brandCode=PetCityEE";
         const unsubscribeApothekaBeauty = "https://staging-sas.upitech.ee/#/unsubscribe?email=test@test.ee&alpiCustomerId="+alpiID+"&language=et&brandCode=BeautyEE";
-
+        //Go to Apotheka SaS unsubscribe link and click unsubscribe
         await page.goto(unsubscribeApotheka);
         await page.waitForSelector(".layout-unsubscribe.ng-scope");
         await page.waitAndClick(".btn.ng-binding.primary");
-
+        //Go to Petcity SaS unsubscribe link and click unsubscribe
         await page.goto(unsubscribePetcity);
         await page.waitForSelector(".layout-unsubscribe.ng-scope");
         await page.waitAndClick(".btn.ng-binding.primary");
-
+        //Go to ApothekaBeauty SaS unsubscribe link and click unsubscribe
         await page.goto(unsubscribeApothekaBeauty);
         await page.waitForSelector(".layout-unsubscribe.ng-scope");
         await page.waitAndClick(".btn.ng-binding.primary");
         // Go to unsubscribe page
         await page.goto(constants.unSusubscribe.subscribePage);
-
+        //Get subscription values
         const subscriptionApotheka = await loginPage.getSubscriptionValue('/html//input[@id="subscription[ApothekaEE]"]');
         const subscriptionPetcity = await loginPage.getSubscriptionValue('/html//input[@id="subscription[PetCityEE]"]');
         const subscriptionApothekaBeauty = await loginPage.getSubscriptionValue('/html//input[@id="subscription[BeautyEE]"]');
-          
+        //Expect subscriptions to be false
         expect(subscriptionApotheka).to.be.false;
         expect(subscriptionPetcity).to.be.false;
         //expect(subscriptionApothekaBeauty).to.be.false;
