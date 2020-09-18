@@ -68,9 +68,10 @@ var Builder = function () {
     value: async function waitAndClick(selector) {
       await this.page.waitForSelector(selector);
       try {
+        //await this.page.evaluate((selector) => document.querySelector(selector).click(), selector);
         await this.page.click(selector);
       } catch (error) {
-        console.log("error clicking " + selector + " : " + error);
+        console.log("Error clicking " + selector + " : " + error);
       }
     }
     // waits for element and clicks 2 times
@@ -162,9 +163,13 @@ var Builder = function () {
     key: "clickHelp",
     value: async function clickHelp(selector) {
       await this.page.waitForSelector(selector);
-      await this.page.evaluate(function (selector) {
-        return document.querySelector(selector).click();
-      }, selector);
+      try {
+        await this.page.evaluate(function (selector) {
+          return document.querySelector(selector).click();
+        }, selector);
+      } catch (error) {
+        console.log("Error clicking " + selector + " : " + error);
+      }
     }
     //wait for element to have a certain value
 

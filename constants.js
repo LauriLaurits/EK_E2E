@@ -1,13 +1,6 @@
-/* module.exports {
-    const usernameMMadmin: lauri@upitech.ee;
-    const passwordMMadmin: Kass12345;
-  }; */
-  
-//export const timeout = 30000;
-
 'use strict';
 
-let constants = {
+const constants = {
   formCredentials: {
     personalCode: "39010102711",
     message: "Testinfo Kullerile",
@@ -40,9 +33,15 @@ let constants = {
   unSusubscribe: {
     backendUrl: "https://www.staging.apotheka.ee/MMadmin/",
     magentoBackendUsername: "lauri@upitech.ee",
-    magentoBackendPassword: "b8thLCzBP17KaaGCeDwm",
-    subscribePage: "https://www.staging.apotheka.ee/newsletter/manage/"
-
+    magentoBackendPassword: "Kutsikas12345.",
+    unSubscribeUrl: "https://staging-sas.upitech.ee/#/unsubscribe?email=pimogam614@synevde.com&alpiCustomerId=",
+    sSubscribeBlock: ".box-newsletter",
+    subscribePage: "https://www.staging.apotheka.ee/newsletter/manage/",
+    sSubscribeApo: "/html//input[@id='subscription[ApothekaEE]']",
+    sSubscribePet: "/html//input[@id='subscription[PetCityEE]']",
+    sSubscribeBeauty: "/html//input[@id='subscription[BeautyEE]']",
+    sUnsubscribeBlock: ".layout-unsubscribe.ng-scope",
+    sUnsubscribeButton: ".btn.ng-binding.primary"
   }
   
 };

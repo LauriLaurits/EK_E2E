@@ -18,6 +18,8 @@ var _LoginPage2 = _interopRequireDefault(_LoginPage);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var constants = require("./../../constants");
+
 describe.skip("Tests for adding Default product to shopping cart", function () {
   var page = void 0;
   var homepage = void 0;
@@ -34,6 +36,11 @@ describe.skip("Tests for adding Default product to shopping cart", function () {
     await homepage.navigation();
   });
   after(async function () {
+    // Delete Customer from Magento
+    //await loginPage.deleteCustomerFromMagentoLoggedOut(constants.unSusubscribe.backendUrl, constants.unSusubscribe.magentoBackendUsername, constants.unSusubscribe.magentoBackendPassword);
+    //Delete Customer from TestALPI
+    //await loginPage.deleteCustomerFromAlpi();
+    // Close Browser
     await page.close();
   });
 
@@ -71,9 +78,11 @@ describe.skip("Tests for adding Default product to shopping cart", function () {
       (0, _chai.expect)((await page.getText(".item-info .product-item-name"))).to.include("BABE");
     });
   });
-  describe("Adding DEFAULT Products for Customers", function () {
+  describe.skip("Adding DEFAULT Products for Customers", function () {
     (0, _mochaSteps.step)("Step 2.1: Adding from listview", async function () {
-      await loginPage.loginMobileID("https://www.staging.apotheka.ee", "37200000566");
+      //await loginPage.loginMobileID("https://www.staging.apotheka.ee","37200000566");
+      //Make new Customer
+      await loginPage.newCustomer();
       await page.goto("https://www.staging.apotheka.ee/tooted/ilu/huulepulgad", { waitUntil: 'networkidle0' });
       await homepage.navigation();
       await page.waitAndClick(".product-item:nth-of-type(1) .tocart");

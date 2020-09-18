@@ -19,13 +19,13 @@ var HomePage = function () {
         key: "visit",
         value: async function visit(siteUrl) {
             await this.page.goto(siteUrl, { waitUntil: 'networkidle0' });
-            await this.page.waitForSelector(".navigation");
+            await this.page.waitForSelector(".primary-menu");
             await this.page.waitForSelector("#registration_link");
         }
     }, {
         key: "navigation",
         value: async function navigation() {
-            await this.page.waitForSelector(".navigation");
+            await this.page.waitForSelector(".primary-menu");
         }
     }]);
 

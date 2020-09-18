@@ -7,7 +7,7 @@ import LoginPage from "../pages/LoginPage";
 
 let constants = require("./../../constants");
 
-describe.skip("Flow for adding prduct to cart and pay in Fast Checkout", () => {
+describe.skip("Flow for adding product to cart and pay in Fast Checkout", () => {
   let page;
   let homepage;
   let loginPage;
@@ -20,7 +20,7 @@ describe.skip("Flow for adding prduct to cart and pay in Fast Checkout", () => {
   after(async () => {
     await page.close();
   });
-  describe("Paying default prducts Non Customer", () => {
+  describe("Paying default products Non Customer", () => {
     step("Step 1: Adding default product with link to cart ", async () => {
       await page.goto("https://www.staging.apotheka.ee/products/link/add/pmm0100409ee",{ waitUntil: "networkidle0" });
       await homepage.navigation();

@@ -4,9 +4,11 @@ export default class LoginPage {
     this.page = page;
   }
   async newCustomer() {
-    await this.page.goto("https:/staging.apotheka.ee");
+    await this.page.goto("https://staging.apotheka.ee");
     await this.page.waitAndClick("#registration_link");
     await this.page.waitForSelector("#horizontal_tabs");
+    await this.page.waitAndClick("div#mobileid-login > .fieldset input[name='personalcode']");
+    await this.page.waitAndType("div#mobileid-login > .fieldset input[name='personalcode']", "60001018800");
     await this.page.waitAndClick("#mobile-id-input");
     await this.page.waitAndType("#mobile-id-input", "37200000566");
     await this.page.click("#mobileid-submit");
@@ -15,7 +17,7 @@ export default class LoginPage {
       .true;
     await this.page.waitForSelector(".create.fieldset.info");
     await this.page.waitAndClick("#email_address");
-    await this.page.waitAndType("#email_address", "test@test.ee");
+    await this.page.waitAndType("#email_address", "pimogam614@synevde.com");
     await this.page.waitAndClick(".create.fieldset.info input#telephone");
     await this.page.waitAndType(
       ".create.fieldset.info input#telephone",
@@ -80,6 +82,37 @@ export default class LoginPage {
       ".item-customer-manage.level-1 a"
     );
     await this.page.goto(customerDetailsUrl[0]);
+    const getCustomerID = await this.page.getText(
+      "tr:nth-of-type(2) > td:nth-of-type(2) > .data-grid-cell-content"
+    );
+    await this.page.goto(
+      "https://www.staging.apotheka.ee/MMadmin/customer/index/edit/id/" +
+        getCustomerID
+    );
+    await this.page.waitForSelector(".admin__page-nav");
+    await this.page.clickHelp("#customer-edit-delete-button");
+    //await this.page.waitForSelector("aside:nth-of-type(1)  .modal-header");
+    await this.page.waitFor(200);
+    await this.page.clickHelp(".action-accept.action-primary");
+
+    const deleteMessage = await this.page.getText(
+      ".message.message-success.success"
+    );
+    expect(deleteMessage).to.include("You deleted the customer.");
+  }
+  //delete Customer when you are logged in
+  async deleteCustomerFromMagentoLoggedOut(backend_url, username, password) {
+    await this.page.goto(backend_url, { waitUntil: "networkidle0" });
+    await this.page.waitAndClick("#username");
+    await this.page.waitAndType("#username", username);
+    await this.page.waitAndClick("#login");
+    await this.page.waitAndType("#login", password);
+    await this.page.waitAndClick(".action-primary");
+    await this.page.waitAndClick(".action-close");
+    const customerDetailsUrl = await this.page.getHref(
+      ".item-customer-manage.level-1 a"
+    );
+    await this.page.goto(customerDetailsUrl[0]);
 
     const getCustomerID = await this.page.getText(
       "tr:nth-of-type(2) > td:nth-of-type(2) > .data-grid-cell-content"
@@ -91,7 +124,7 @@ export default class LoginPage {
     await this.page.waitForSelector(".admin__page-nav");
     await this.page.clickHelp("#customer-edit-delete-button");
     //await this.page.waitForSelector("aside:nth-of-type(1)  .modal-header");
-    await this.page.waitFor(100);
+    await this.page.waitFor(200);
     await this.page.clickHelp(".action-accept.action-primary");
 
     const deleteMessage = await this.page.getText(
@@ -99,6 +132,7 @@ export default class LoginPage {
     );
     expect(deleteMessage).to.include("You deleted the customer.");
   }
+  //delete TestCustomer from ALPI
   async deleteCustomerFromAlpi() {
     await this.page.goto("https://testcard.apotheka.ee/");
     await this.page.waitAndClick("input[name='user']");

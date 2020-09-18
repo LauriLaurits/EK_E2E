@@ -5,6 +5,8 @@ import Page from "../builder";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 
+let constants = require("./../../constants");
+
 describe.skip("Tests for adding Default product to shopping cart", () => {
   let page;
   let homepage;
@@ -21,6 +23,11 @@ describe.skip("Tests for adding Default product to shopping cart", () => {
     await homepage.navigation();
   }); 
   after(async () => {
+    // Delete Customer from Magento
+    //await loginPage.deleteCustomerFromMagentoLoggedOut(constants.unSusubscribe.backendUrl, constants.unSusubscribe.magentoBackendUsername, constants.unSusubscribe.magentoBackendPassword);
+    //Delete Customer from TestALPI
+    //await loginPage.deleteCustomerFromAlpi();
+    // Close Browser
     await page.close();
   });
 
@@ -58,9 +65,11 @@ describe.skip("Tests for adding Default product to shopping cart", () => {
       expect(await page.getText(".item-info .product-item-name")).to.include("BABE");
     });
   });
-  describe("Adding DEFAULT Products for Customers", () => {
+  describe.skip("Adding DEFAULT Products for Customers", () => {
     step("Step 2.1: Adding from listview", async () => {
-        await loginPage.loginMobileID("https://www.staging.apotheka.ee","37200000566");
+        //await loginPage.loginMobileID("https://www.staging.apotheka.ee","37200000566");
+        //Make new Customer
+        await loginPage.newCustomer();
         await page.goto("https://www.staging.apotheka.ee/tooted/ilu/huulepulgad",{ waitUntil: 'networkidle0'});
         await homepage.navigation();
         await page.waitAndClick(".product-item:nth-of-type(1) .tocart");

@@ -49,9 +49,10 @@ export default class Builder {
   async waitAndClick(selector) {
     await this.page.waitForSelector(selector);
     try {
+      //await this.page.evaluate((selector) => document.querySelector(selector).click(), selector);
       await this.page.click(selector);
     } catch (error) {
-    console.log("error clicking " + selector + " : " + error );
+    console.log("Error clicking " + selector + " : " + error );
   }
   }
   // waits for element and clicks 2 times
@@ -112,7 +113,11 @@ export default class Builder {
   //helper function for click()
   async clickHelp(selector) {
     await this.page.waitForSelector(selector);
-    await this.page.evaluate((selector) => document.querySelector(selector).click(), selector);
+    try {
+      await this.page.evaluate((selector) => document.querySelector(selector).click(), selector);
+    } catch (error) {
+    console.log("Error clicking " + selector + " : " + error );
+  }
   }
   //wait for element to have a certain value
   async waitForValue(selector, value) {
