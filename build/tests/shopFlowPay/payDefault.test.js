@@ -4,23 +4,23 @@ var _mochaSteps = require("mocha-steps");
 
 var _chai = require("chai");
 
-var _builder = require("../builder");
+var _builder = require("../../lib/builder");
 
 var _builder2 = _interopRequireDefault(_builder);
 
-var _HomePage = require("../pages/HomePage");
+var _HomePage = require("../../pages/HomePage");
 
 var _HomePage2 = _interopRequireDefault(_HomePage);
 
-var _LoginPage = require("../pages/LoginPage");
+var _LoginPage = require("../../pages/LoginPage");
 
 var _LoginPage2 = _interopRequireDefault(_LoginPage);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var constants = require("./../../constants");
+var constants = require("../../lib/constants/constants");
 
-describe.skip("Flow for adding product to cart and pay in Fast Checkout", function () {
+describe("SHOP FLOW FOR NON CUSTOMER BUYING DEFAULT PRODUCT", function () {
   var page = void 0;
   var homepage = void 0;
   var loginPage = void 0;
@@ -33,7 +33,7 @@ describe.skip("Flow for adding product to cart and pay in Fast Checkout", functi
   after(async function () {
     await page.close();
   });
-  describe("Paying default products Non Customer", function () {
+  describe("E2E shopflow default products non customer", function () {
     (0, _mochaSteps.step)("Step 1: Adding default product with link to cart ", async function () {
       await page.goto("https://www.staging.apotheka.ee/products/link/add/pmm0100409ee", { waitUntil: "networkidle0" });
       await homepage.navigation();
@@ -49,11 +49,11 @@ describe.skip("Flow for adding product to cart and pay in Fast Checkout", functi
 
     (0, _mochaSteps.step)("Step 2: React checkout choose shipping method and fill necessary fields", async function () {
       //Choose shipping method
-      await page.waitAndClick("[class] li:nth-of-type(5) div span");
+      await page.waitAndClick("[class] li:nth-of-type(4) div span");
       //Get Order number
       await page.waitForSelector(".summary-title");
-      var orderNumber = await page.getText(".summary-title");
-      console.log("Order Nr. React: " + orderNumber);
+      //const orderNumber = await page.getText(".summary-title");
+      //console.log("Order Nr. React: " + orderNumber);
       //Keelan saadetise üleandmise alaealisele
       await page.waitAndClick(constants.selectors.underAge);
       //Anda üle vaid kontaktisikule
@@ -115,9 +115,9 @@ describe.skip("Flow for adding product to cart and pay in Fast Checkout", functi
       await page.waitForSelector(".checkout-success p:nth-of-type(1) span");
       //await page.waitFor(2000);
       //Order number from succsess page
-      var successOrderNumber = await page.getText(".checkout-success p:nth-of-type(1) span");
-      console.log("Success Order Nr: " + successOrderNumber);
-      // expect(orderNumber).to.include(successOrderNumber);
+      //const successOrderNumber = await page.getText(".checkout-success p:nth-of-type(1) span");
+      //console.log("Success Order Nr: " + successOrderNumber);
+      //expect(orderNumber).to.include(successOrderNumber);
     });
   });
 });

@@ -1,3 +1,4 @@
+//Includes settings and helper functions
 import puppeteer from "puppeteer";
 
 export default class Builder {
@@ -124,5 +125,4 @@ export default class Builder {
     await this.page.waitForFunction(document.getElementById(selector).value != value);
     return true;
   }
-
 }

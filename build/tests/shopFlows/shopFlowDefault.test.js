@@ -4,23 +4,23 @@ var _mochaSteps = require("mocha-steps");
 
 var _chai = require("chai");
 
-var _builder = require("../builder");
+var _builder = require("../../lib/builder");
 
 var _builder2 = _interopRequireDefault(_builder);
 
-var _HomePage = require("../pages/HomePage");
+var _HomePage = require("../../pages/HomePage");
 
 var _HomePage2 = _interopRequireDefault(_HomePage);
 
-var _LoginPage = require("../pages/LoginPage");
+var _LoginPage = require("../../pages/LoginPage");
 
 var _LoginPage2 = _interopRequireDefault(_LoginPage);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var constants = require("./../../constants");
+var constants = require("../../lib/constants/constants");
 
-describe.skip("Tests for adding Default product to shopping cart", function () {
+describe("ADDING PRODUCTS TO CART FOR NON CUSTOMER", function () {
   var page = void 0;
   var homepage = void 0;
   var loginPage = void 0;

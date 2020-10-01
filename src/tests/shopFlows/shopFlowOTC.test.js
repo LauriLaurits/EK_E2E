@@ -1,13 +1,13 @@
 import { step } from "mocha-steps";
 import { expect } from "chai";
 
-import Page from "../builder";
-import HomePage from "../pages/HomePage";
-import LoginPage from "../pages/LoginPage";
+import Page from "../../lib/builder";
+import HomePage from "../../pages/HomePage";
+import LoginPage from "../../pages/LoginPage";
 
-let constants = require("./../../constants");
+let constants = require("../../lib/constants/constants");
 
-describe.skip("Tests for adding OTC product to shopping cart", () => {
+describe("SHOP FLOW FOR NON CUSTOMER BUYING OTC PRODUCT", () => {
   let page;
   let homepage;
   let loginPage;
@@ -27,8 +27,9 @@ describe.skip("Tests for adding OTC product to shopping cart", () => {
         "https://www.staging.apotheka.ee/bisacodyl-gsk-rektaalsuposiit-10mg-n10-pmm0000489ee",{ waitUntil: 'networkidle0'});
       await homepage.navigation();
       await page.waitAndClick(".btn-addtocart");
-      await page.clickHelp("#verify-addtocart .automatic-dropdown div");
-      await page.clickHelp("#verify-addtocart [data-value='23']");
+      await page.clickHelp(".popup-content .control > .input-text");
+      await page.waitAndType(".popup-content .control > .input-text", "23");
+      await page.clickHelp("[id='usage_symptom\[0\]']");
       await page.clickHelp("#verify-addtocart > div > ul > li:nth-child(3) > button");
       //Procuct added to cart expect subtototal to be greater than 0€
       await page.waitForSelector(".item-info");
@@ -41,7 +42,7 @@ describe.skip("Tests for adding OTC product to shopping cart", () => {
   });
   step("Step 2:  React checkout choose shipping method and fill necessary fields", async () => {
     // Choose Smartpost pakiautomaat
-    await page.clickHelp("[class] li:nth-of-type(6) div span");
+    await page.clickHelp("[class] li:nth-of-type(5) div span");
     //Get Order number
     await page.waitForSelector(".summary-title");
     const orderNumber = await page.getText(".summary-title");

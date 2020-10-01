@@ -1,13 +1,13 @@
 import { step } from "mocha-steps";
 import { expect } from "chai";
 
-import Page from "../builder";
-import HomePage from "../pages/HomePage";
-import LoginPage from "../pages/LoginPage";
+import Page from "../../lib/builder";
+import HomePage from "../../pages/HomePage";
+import LoginPage from "../../pages/LoginPage";
 
-let constants = require("./../../constants");
+let constants = require("../../lib/constants/constants");
 
-describe.skip("Flow for adding product to cart and pay in Fast Checkout", () => {
+describe("SHOP FLOW FOR NON CUSTOMER BUYING DEFAULT PRODUCT", () => {
   let page;
   let homepage;
   let loginPage;
@@ -20,7 +20,7 @@ describe.skip("Flow for adding product to cart and pay in Fast Checkout", () => 
   after(async () => {
     await page.close();
   });
-  describe("Paying default products Non Customer", () => {
+  describe("E2E shopflow default products non customer", () => {
     step("Step 1: Adding default product with link to cart ", async () => {
       await page.goto("https://www.staging.apotheka.ee/products/link/add/pmm0100409ee",{ waitUntil: "networkidle0" });
       await homepage.navigation();
@@ -35,11 +35,11 @@ describe.skip("Flow for adding product to cart and pay in Fast Checkout", () => 
 
     step("Step 2: React checkout choose shipping method and fill necessary fields",async () => {
           //Choose shipping method
-          await page.waitAndClick("[class] li:nth-of-type(5) div span");
+          await page.waitAndClick("[class] li:nth-of-type(4) div span");
           //Get Order number
           await page.waitForSelector(".summary-title");
-          const orderNumber = await page.getText(".summary-title");
-          console.log("Order Nr. React: " + orderNumber);
+          //const orderNumber = await page.getText(".summary-title");
+          //console.log("Order Nr. React: " + orderNumber);
           //Keelan saadetise üleandmise alaealisele
           await page.waitAndClick(constants.selectors.underAge);
           //Anda üle vaid kontaktisikule
@@ -102,9 +102,9 @@ describe.skip("Flow for adding product to cart and pay in Fast Checkout", () => 
       await page.waitForSelector(".checkout-success p:nth-of-type(1) span");
       //await page.waitFor(2000);
       //Order number from succsess page
-      const successOrderNumber = await page.getText(".checkout-success p:nth-of-type(1) span");
-      console.log("Success Order Nr: " + successOrderNumber);
-      // expect(orderNumber).to.include(successOrderNumber);
+      //const successOrderNumber = await page.getText(".checkout-success p:nth-of-type(1) span");
+      //console.log("Success Order Nr: " + successOrderNumber);
+      //expect(orderNumber).to.include(successOrderNumber);
     });
   });
 });

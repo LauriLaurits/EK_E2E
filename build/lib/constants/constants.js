@@ -1,6 +1,6 @@
 'use strict';
 
-const constants = {
+var constants = {
   formCredentials: {
     personalCode: "39010102711",
     message: "Testinfo Kullerile",
@@ -25,15 +25,22 @@ const constants = {
     phoneNumber: ".form-row:nth-of-type(3) [type]",
     //duplikaat emailiga
     //county: ".layout-form-column:nth-of-type(1) [type]",
-    city: ".form-row:nth-of-type(6) [type]",
-    aadress: ".form-row:nth-of-type(7) [type]",
-    zipCode: ".form-row:nth-of-type(8) [type]",
+    city: ".form-row:nth-of-type(5) [type]",
+    aadress: ".form-row:nth-of-type(6) [type]",
+    zipCode: ".form-row:nth-of-type(7) [type]",
+    submitSecond: "#checkout-root > div > div.frame-checkout-content > div > div > div > div > div.layout-sidebar-primary > ul > li.list-progress-item.current.ListProgressItem-item-0-2-5 > div.list-progress-item-content.ListProgressItem-content-0-2-4 > div > ul > li"
+  },
+  selectorsLogged: {
+
+    city: ".form-row:nth-of-type(5) [type]",
+    aadress: ".form-row:nth-of-type(6) [type]",
+    zipCode: ".form-row:nth-of-type(7) [type]",
     submitSecond: "#checkout-root > div > div.frame-checkout-content > div > div > div > div > div.layout-sidebar-primary > ul > li.list-progress-item.current.ListProgressItem-item-0-2-5 > div.list-progress-item-content.ListProgressItem-content-0-2-4 > div > ul > li"
   },
   unSusubscribe: {
     backendUrl: "https://www.staging.apotheka.ee/MMadmin/",
-    magentoBackendUsername: "lauri@upitech.ee",
-    magentoBackendPassword: "Kutsikas12345.",
+    mbUsername: "lauri@upitech.ee",
+    mbPassword: "Kutsikas12345.",
     unSubscribeUrl: "https://staging-sas.upitech.ee/#/unsubscribe?email=pimogam614@synevde.com&alpiCustomerId=",
     sSubscribeBlock: ".box-newsletter",
     subscribePage: "https://www.staging.apotheka.ee/newsletter/manage/",
@@ -43,7 +50,7 @@ const constants = {
     sUnsubscribeBlock: ".layout-unsubscribe.ng-scope",
     sUnsubscribeButton: ".btn.ng-binding.primary"
   }
-  
+
 };
 
-module.exports= Object.freeze(constants);
+module.exports = Object.freeze(constants);

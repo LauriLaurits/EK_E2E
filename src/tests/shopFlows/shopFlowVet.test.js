@@ -1,13 +1,13 @@
 import { step } from "mocha-steps";
 import { expect } from "chai";
 
-import Page from "../builder";
-import HomePage from "../pages/HomePage";
-import LoginPage from "../pages/LoginPage";
+import Page from "../../lib/builder";
+import HomePage from "../../pages/HomePage";
+import LoginPage from "../../pages/LoginPage";
 
-let constants = require("./../../constants");
+let constants = require("../../lib/constants/constants");
 
-describe.skip("Tests for adding Vet product to shopping cart", () => {
+describe("SHOP FLOW FOR NON CUSTOMER BUYING VET PRODUCT", () => {
   let page;
   let homepage;
   let loginPage;
@@ -55,7 +55,7 @@ describe.skip("Tests for adding Vet product to shopping cart", () => {
   });
   step("Step 2: React checkout choose shipping method and fill necessary fields", async () => {
     // Choose Smartpost pakiautomaat
-    await page.clickHelp("[class] li:nth-of-type(6) div span");
+    await page.clickHelp("[class] li:nth-of-type(5) div span");
     //Get Order number
     await page.waitForSelector(".summary-title");
     const orderNumber = await page.getText(".summary-title");

@@ -2,26 +2,29 @@
 
 var _mochaSteps = require("mocha-steps");
 
-var _builder = require("../builder");
+var _chai = require("chai");
+
+var _builder = require("../../lib/builder");
 
 var _builder2 = _interopRequireDefault(_builder);
 
-var _chai = require("chai");
-
-var _HomePage = require("../pages/HomePage");
+var _HomePage = require("../../pages/HomePage");
 
 var _HomePage2 = _interopRequireDefault(_HomePage);
 
-var _LoginPage = require("../pages/LoginPage");
+var _LoginPage = require("../../pages/LoginPage");
 
 var _LoginPage2 = _interopRequireDefault(_LoginPage);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var constants = require("./../../constants"); //import puppeteer from "puppeteer";
+var constants = require("../../lib/constants/constants");
+var alpi = require("../../lib/constants/alpiConst");
 
+var _require = require('../../lib/helpers'),
+    makePostRequest = _require.makePostRequest;
 
-describe("Newsletter subscribe/unsubscribe test", function () {
+describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST", function () {
   var page = void 0;
   var homepage = void 0;
   var loginPage = void 0;
@@ -48,7 +51,6 @@ describe("Newsletter subscribe/unsubscribe test", function () {
       await page.waitForSelector(constants.unSusubscribe.sSubscribeBlock);
       await page.goto(constants.unSusubscribe.subscribePage);
       await page.waitForSelector("#form-validate");
-      //await page.waitFor(3000);
       //Test that customer has subscription for Apotheka, Petcity, ApothekaBeauty
       var subscriptionApotheka = await loginPage.getSubscriptionValue(constants.unSusubscribe.sSubscribeApo);
       var subscriptionPetcity = await loginPage.getSubscriptionValue(constants.unSusubscribe.sSubscribePet);
@@ -57,9 +59,29 @@ describe("Newsletter subscribe/unsubscribe test", function () {
       (0, _chai.expect)(subscriptionPetcity).to.be.true;
       (0, _chai.expect)(subscriptionApothekaBeauty).to.be.true;
     });
-    (0, _mochaSteps.step)("Step 2: Get ALPI ID, construct unsubscribe link and click on unsubscribe ", async function () {
+  });
+  describe("Check subscriptions after account creation from Alpi API", function () {
+    //Make Alpi API requests and check subscriptions
+    (0, _mochaSteps.step)('Step 2.1: Check apotheka subscription ', async function () {
+      var request = await makePostRequest(alpi.alpiRequests.url, alpi.alpiRequests.personalCode);
+      (0, _chai.expect)(request.subscriptions_newsletter[0].subscription_origin).equal('ApothekaEE');
+      (0, _chai.expect)(request.subscriptions_newsletter[0].subscription).equal('1');
+    });
+    (0, _mochaSteps.step)('Step 2.2: Check petcity subscription ', async function () {
+      var request = await makePostRequest(alpi.alpiRequests.url, alpi.alpiRequests.personalCode);
+      (0, _chai.expect)(request.subscriptions_newsletter[1].subscription_origin).equal('PetCityEE');
+      (0, _chai.expect)(request.subscriptions_newsletter[1].subscription).equal('1');
+    });
+    (0, _mochaSteps.step)('Step 2.3: Check beauty subscription ', async function () {
+      var request = await makePostRequest(alpi.alpiRequests.url, alpi.alpiRequests.personalCode);
+      (0, _chai.expect)(request.subscriptions_newsletter[2].subscription_origin).equal('BeautyEE');
+      (0, _chai.expect)(request.subscriptions_newsletter[2].subscription).equal('1');
+    });
+  });
+  describe("Create New Customer and test SaS unsubscribe links  ", function () {
+    (0, _mochaSteps.step)("Step 3: Get ALPI ID, construct unsubscribe link and click on unsubscribe", async function () {
       //Get ALPI id for last generated Customer
-      var alpiID = await loginPage.getAlpiID(constants.unSusubscribe.backendUrl, constants.unSusubscribe.magentoBackendUsername, constants.unSusubscribe.magentoBackendPassword);
+      var alpiID = await loginPage.getAlpiID(constants.unSusubscribe.backendUrl, constants.unSusubscribe.mbUsername, constants.unSusubscribe.mbPassword);
       //Construct SaS unsubscribe links
       var unsubscribeApotheka = constants.unSusubscribe.unSubscribeUrl + alpiID + "&language=et&brandCode=ApothekaEE";
       var unsubscribePetcity = constants.unSusubscribe.unSubscribeUrl + alpiID + "&language=et&brandCode=PetCityEE";
@@ -86,6 +108,24 @@ describe("Newsletter subscribe/unsubscribe test", function () {
       (0, _chai.expect)(subscriptionApotheka).to.be.false;
       (0, _chai.expect)(subscriptionPetcity).to.be.false;
       (0, _chai.expect)(subscriptionApothekaBeauty).to.be.false;
+    });
+  });
+  describe("Check subscriptions after Unsubscribe from Alpi API", function () {
+    //Make Alpi API requests and check subscriptions
+    (0, _mochaSteps.step)('Step 4.1: Check apotheka subscription ', async function () {
+      var request = await makePostRequest(alpi.alpiRequests.url, alpi.alpiRequests.personalCode);
+      (0, _chai.expect)(request.subscriptions_newsletter[0].subscription_origin).equal('ApothekaEE');
+      (0, _chai.expect)(request.subscriptions_newsletter[0].subscription).equal('0');
+    });
+    (0, _mochaSteps.step)('Step 4.2: Check petcity subscription ', async function () {
+      var request = await makePostRequest(alpi.alpiRequests.url, alpi.alpiRequests.personalCode);
+      (0, _chai.expect)(request.subscriptions_newsletter[1].subscription_origin).equal('PetCityEE');
+      (0, _chai.expect)(request.subscriptions_newsletter[1].subscription).equal('0');
+    });
+    (0, _mochaSteps.step)('Step 4.3: Check beauty subscription ', async function () {
+      var request = await makePostRequest(alpi.alpiRequests.url, alpi.alpiRequests.personalCode);
+      (0, _chai.expect)(request.subscriptions_newsletter[2].subscription_origin).equal('BeautyEE');
+      (0, _chai.expect)(request.subscriptions_newsletter[2].subscription).equal('0');
     });
   });
 });
