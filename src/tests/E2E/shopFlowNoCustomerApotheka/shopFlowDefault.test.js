@@ -1,13 +1,13 @@
 import { step } from "mocha-steps";
 import { expect } from "chai";
 
-import Page from "../../lib/builder";
-import HomePage from "../../pages/HomePage";
-import LoginPage from "../../pages/LoginPage";
+import Page from "../../../lib/builder";
+import HomePage from "../../../pages/HomePage";
+import LoginPage from "../../../pages/LoginPage";
 
-let constants = require("../../lib/constants/constants");
+let constants = require("../../../lib/constants/constants");
 
-describe("SHOP FLOW FOR NON CUSTOMER BUYING DEFAULT PRODUCT", () => {
+describe.skip("SHOP FLOW FOR NON CUSTOMER BUYING DEFAULT PRODUCT", () => {
   let page;
   let homepage;
   let loginPage;
@@ -20,7 +20,7 @@ describe("SHOP FLOW FOR NON CUSTOMER BUYING DEFAULT PRODUCT", () => {
   after(async () => {
     await page.close();
   });
-  describe("E2E shopflow default products non customer", () => {
+  describe("E2E Shopflow buying default products as non customer", () => {
     step("Step 1: Adding default product with link to cart ", async () => {
       await page.goto("https://www.staging.apotheka.ee/products/link/add/pmm0100409ee",{ waitUntil: "networkidle0" });
       await homepage.navigation();
@@ -39,7 +39,6 @@ describe("SHOP FLOW FOR NON CUSTOMER BUYING DEFAULT PRODUCT", () => {
           //Get Order number
           await page.waitForSelector(".summary-title");
           //const orderNumber = await page.getText(".summary-title");
-          //console.log("Order Nr. React: " + orderNumber);
           //Keelan saadetise üleandmise alaealisele
           await page.waitAndClick(constants.selectors.underAge);
           //Anda üle vaid kontaktisikule

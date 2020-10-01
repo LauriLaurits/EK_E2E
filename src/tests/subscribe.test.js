@@ -1,14 +1,14 @@
 import { step } from "mocha-steps";
 import { expect } from "chai";
 
-import Page from "../../lib/builder";
-import HomePage from "../../pages/HomePage";
-import LoginPage from "../../pages/LoginPage";
+import Page from "../lib/builder";
+import HomePage from "../pages/HomePage";
+import LoginPage from "../pages/LoginPage";
 
-let constants = require("../../lib/constants/constants");
-let alpi = require("../../lib/constants/alpiConst");
+let constants = require("../lib/constants/constants");
+let alpi = require("../lib/constants/alpiConst");
 
-const { makePostRequest } = require('../../lib/helpers');
+const { makePostRequest } = require('../lib/helpers');
 
 describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST", () => {
   let page;

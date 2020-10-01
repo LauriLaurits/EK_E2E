@@ -4,24 +4,24 @@ var _mochaSteps = require("mocha-steps");
 
 var _chai = require("chai");
 
-var _builder = require("../../lib/builder");
+var _builder = require("../lib/builder");
 
 var _builder2 = _interopRequireDefault(_builder);
 
-var _HomePage = require("../../pages/HomePage");
+var _HomePage = require("../pages/HomePage");
 
 var _HomePage2 = _interopRequireDefault(_HomePage);
 
-var _LoginPage = require("../../pages/LoginPage");
+var _LoginPage = require("../pages/LoginPage");
 
 var _LoginPage2 = _interopRequireDefault(_LoginPage);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var constants = require("../../lib/constants/constants");
-var alpi = require("../../lib/constants/alpiConst");
+var constants = require("../lib/constants/constants");
+var alpi = require("../lib/constants/alpiConst");
 
-var _require = require('../../lib/helpers'),
+var _require = require('../lib/helpers'),
     makePostRequest = _require.makePostRequest;
 
 describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST", function () {

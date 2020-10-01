@@ -4,7 +4,8 @@
   "description": "Testframework for EK e2e tests",
   "main": "index.js",
   "scripts": {
-    "test": "node ./node_modules/mocha/bin/mocha --timeout=43000 --require mocha-steps ./build/tests/**/**.js",
+    "test": "node ./node_modules/mocha/bin/mocha --timeout=43000 --require mocha-steps ./build/tests/**.js",
+    "test:e2e":"node ./node_modules/mocha/bin/mocha --timeout=43000 --require mocha-steps ./build/tests/e2e/**",
     "clean": "rm -rf build",
     "build": "babel --preset es2015 -d build/ src/"
   },

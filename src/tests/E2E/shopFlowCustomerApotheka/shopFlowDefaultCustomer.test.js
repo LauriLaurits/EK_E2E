@@ -1,13 +1,13 @@
 import { step } from "mocha-steps";
 import { expect } from "chai";
 
-import Page from "../../lib/builder";
-import HomePage from "../../pages/HomePage";
-import LoginPage from "../../pages/LoginPage";
+import Page from "../../../lib/builder";
+import HomePage from "../../../pages/HomePage";
+import LoginPage from "../../../pages/LoginPage";
 
-let constants = require("../../lib/constants/constants");
+let constants = require("../../../lib/constants/constants");
 
-describe("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT", () => {
+describe.skip("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT", () => {
   let page;
   let homepage;
   let loginPage;
@@ -25,7 +25,7 @@ describe("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT", () => {
     //Close Browser
     await page.close();
   });
-  describe("E2E shopflow default products for logged in customer", () => {
+  describe("E2E Shopflow buying default products for logged in customer", () => {
     step("Step 1: Making new Customer", async () => {
         await loginPage.newCustomer();
       });

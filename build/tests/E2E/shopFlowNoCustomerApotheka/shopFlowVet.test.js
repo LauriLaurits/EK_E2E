@@ -4,23 +4,23 @@ var _mochaSteps = require("mocha-steps");
 
 var _chai = require("chai");
 
-var _builder = require("../../lib/builder");
+var _builder = require("../../../lib/builder");
 
 var _builder2 = _interopRequireDefault(_builder);
 
-var _HomePage = require("../../pages/HomePage");
+var _HomePage = require("../../../pages/HomePage");
 
 var _HomePage2 = _interopRequireDefault(_HomePage);
 
-var _LoginPage = require("../../pages/LoginPage");
+var _LoginPage = require("../../../pages/LoginPage");
 
 var _LoginPage2 = _interopRequireDefault(_LoginPage);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var constants = require("../../lib/constants/constants");
+var constants = require("../../../lib/constants/constants");
 
-describe("SHOP FLOW FOR NON CUSTOMER BUYING VET PRODUCT", function () {
+describe.skip("SHOP FLOW FOR NON CUSTOMER BUYING VET PRODUCT", function () {
   var page = void 0;
   var homepage = void 0;
   var loginPage = void 0;
@@ -34,7 +34,7 @@ describe("SHOP FLOW FOR NON CUSTOMER BUYING VET PRODUCT", function () {
     await page.close();
   });
 
-  describe("Adding Vet products for Non Customers", function () {
+  describe("E2E Shopflow buying VET products as non customer", function () {
     (0, _mochaSteps.step)("Step 1: Adding from detailview on open times", async function () {
       await page.goto("https://www.staging.apotheka.ee/frontline-combo-cats-tapilahus-100mg-120mg-ml-0-5ml-n1-pmm0099719ee", { waitUntil: 'networkidle0' });
       await homepage.navigation();
@@ -70,8 +70,8 @@ describe("SHOP FLOW FOR NON CUSTOMER BUYING VET PRODUCT", function () {
       await page.clickHelp("[class] li:nth-of-type(5) div span");
       //Get Order number
       await page.waitForSelector(".summary-title");
-      var orderNumber = await page.getText(".summary-title");
-      console.log("Order Nr. React: " + orderNumber);
+      //const orderNumber = await page.getText(".summary-title");
+      //console.log("Order Nr. React: " + orderNumber);
       //Wait for dropdown and click on it
       await page.clickHelp(".control-select-select");
       //Choose value
@@ -120,11 +120,11 @@ describe("SHOP FLOW FOR NON CUSTOMER BUYING VET PRODUCT", function () {
       await page.waitForSelector(".checkout-success p:nth-of-type(1) span");
       //Order number from succsess page
       var successOrderNumber = await page.getText(".checkout-success p:nth-of-type(1) span");
-      console.log("Success Order Nr: " + successOrderNumber);
+      //console.log("Success Order Nr: " + successOrderNumber);
       // expect(orderNumber).to.include(successOrderNumber);
       await page.goto("https://www.staging.apotheka.ee/export/api/order/" + successOrderNumber);
       var getXMLOrderId = await page.getText(".html-attribute-value");
-      console.log("getXMLOrderId: " + getXMLOrderId);
+      //console.log("getXMLOrderId: "+ getXMLOrderId);
       (0, _chai.expect)(successOrderNumber).to.equal(getXMLOrderId);
     });
   });

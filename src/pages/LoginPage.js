@@ -36,6 +36,16 @@ export default class LoginPage {
     await this.page.isElementVisible("#mobileid-verification");
     await this.page.waitForSelector(".authorization-link.logged-in");
   }
+  async loginSmartID(site_url, smart_id) {
+    await this.page.goto(site_url);
+    await this.page.waitAndClick("#registration_link");
+    await this.page.waitAndClick("[aria-controls='login-smartid']");
+    await this.page.waitAndClick("#smart-id-input");
+    await this.page.waitAndType("#smart-id-input", smart_id);
+    await this.page.waitAndClick("#smartid-submit");
+    await this.page.isElementVisible("#smartid-verification");
+    await this.page.waitForSelector(".authorization-link.logged-in");
+  }
   //get alpi id when you are logged out
   async getAlpiID(backend_url, username, password) {
     await this.page.goto(backend_url, { waitUntil: "networkidle0" });
@@ -150,5 +160,10 @@ export default class LoginPage {
     await this.page.waitForSelector(".ui-dialog-buttonset");
     await this.page.keyboard.press("Enter");
     await this.page.keyboard.press("Enter");
+  }
+  async logOutMagento() {
+    await this.page.waitAndClick(".open-btn");
+    await this.page.waitAndClick(".signout");
+    await this.page.waitForSelector(".customer-account-logoutsuccess");
   }
 }

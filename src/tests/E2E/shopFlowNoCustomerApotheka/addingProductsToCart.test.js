@@ -1,13 +1,13 @@
 import { step } from "mocha-steps";
 import { expect } from "chai";
 
-import Page from "../../lib/builder";
-import HomePage from "../../pages/HomePage";
-import LoginPage from "../../pages/LoginPage";
+import Page from "../../../lib/builder";
+import HomePage from "../../../pages/HomePage";
+import LoginPage from "../../../pages/LoginPage";
 
-let constants = require("../../lib/constants/constants");
+let constants = require("../../../lib/constants/constants");
 
-describe("ADDING PRODUCTS TO CART FOR NON CUSTOMER", () => {
+describe.skip("ADDING PRODUCTS TO CART FOR NON CUSTOMER", () => {
   let page;
   let homepage;
   let loginPage;
