@@ -5,9 +5,11 @@ import Page from "../../../lib/builder";
 import HomePage from "../../../pages/HomePage";
 import LoginPage from "../../../pages/LoginPage";
 
+const config = require('../../../lib/config');
+
 let constants = require("../../../lib/constants/constants");
 
-describe.skip("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT", () => {
+describe("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT", () => {
   let page;
   let homepage;
   let loginPage;
@@ -19,18 +21,18 @@ describe.skip("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT", () => {
   });
   after(async () => {
     //Delete Customer from Magento
-    await loginPage.deleteCustomerFromMagentoLoggedOut(constants.unSusubscribe.backendUrl, constants.unSusubscribe.mbUsername, constants.unSusubscribe.mbPassword);
+    await loginPage.deleteCustomerFromMagentoLoggedOut(config.magentoUsername,config.magentoPassword);
     //Delete Customer from TestALPI
-    await loginPage.deleteCustomerFromAlpi();
+    await loginPage.deleteCustomerFromAlpi(config.alpiUsername,config.alpiPassword, config.personalCode);
     //Close Browser
     await page.close();
   });
   describe("E2E Shopflow buying default products for logged in customer", () => {
     step("Step 1: Making new Customer", async () => {
-        await loginPage.newCustomer();
+        await loginPage.newCustomer(config.personalCode,config.phoneNumber,config.email);
       });
     step("Step 2: Adding default product with link to cart ", async () => {
-      await page.goto("https://www.staging.apotheka.ee/products/link/add/pmm0100409ee",{ waitUntil: "networkidle0" });
+      await page.goto(config.baseUrl + "/products/link/add/pmm0100409ee",{ waitUntil: "networkidle0" });
       await homepage.navigation();
       expect(await page.getText(".subtotal")).not.to.equal("0.00 €");
       await homepage.navigation();
@@ -39,7 +41,7 @@ describe.skip("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT", () => {
       expect(await page.getText(".item-info .product-item-name")).to.include("BABE");
       await page.waitAndClick(".primary.checkout");
       await page.waitForSelector("#checkout-root");
-      expect(await page.url()).to.equal("https://www.staging.apotheka.ee/fast/checkout/index/");});
+      expect(await page.url()).to.equal(config.baseUrl + "/fast/checkout/index/");});
 
     step("Step 3: React checkout choose shipping method and fill necessary fields",async () => {
           //Choose shipping method
@@ -49,15 +51,15 @@ describe.skip("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT", () => {
           //const orderNumber = await page.getText(".summary-title");
           //console.log("Order Nr. React: " + orderNumber);
           //Keelan saadetise üleandmise alaealisele
-          await page.waitAndClick(constants.selectors.underAge);
+          await page.waitAndClick(".checkbox-with-label:nth-of-type(1) .checkbox-with-label-label");
           //Anda üle vaid kontaktisikule
-          await page.waitAndClick(constants.selectors.onlyContact);
+          await page.waitAndClick(".checkbox-with-label:nth-of-type(2) .checkbox-with-label-label");
           //Sisesta lubatud isikukood
-          await page.waitAndType(constants.selectors.personalCode,constants.formCredentials.personalCode);
+          await page.waitAndType(".control-input-input","39010102711");
           //Info kullerile
-          await page.waitAndType(constants.selectors.message,constants.formCredentials.message);
-          await page.isElementVisible(constants.selectors.submitFirst);
-          await page.click(constants.selectors.submitFirst);
+          await page.waitAndType(".control-textarea-textarea","Testinfo Kullerile");
+          await page.isElementVisible(".button-inner .text");
+          await page.click(".button-inner .text");
     });
 
     step("Step 4: React checkout fill contact information", async () => {
@@ -65,15 +67,15 @@ describe.skip("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT", () => {
         await page.waitAndClick(".control-select.has-value.size-default");
         await page.waitAndClick("[class='bp3-menu menu menu-layout-default Menu-menu-0-2-6'] li:nth-of-type(3) div");
         //City
-        await page.waitAndType(constants.selectors.city,constants.formCredentials.city);
+        await page.waitAndType(".form-row:nth-of-type(5) [type]","Tartu");
         //Aadress
-        await page.waitAndType(constants.selectors.aadress,constants.formCredentials.aadress);
+        await page.waitAndType(".form-row:nth-of-type(6) [type]","Tamme 18");
         //Zipcode
-        await page.waitAndType(constants.selectors.zipCode,constants.formCredentials.zipCode
+        await page.waitAndType(".form-row:nth-of-type(7) [type]","11318"
         );
         //Wait for button
-        await page.isElementVisible(constants.selectors.submitSecond);
-        await page.click(constants.selectors.submitSecond);
+        await page.isElementVisible("#checkout-root > div > div.frame-checkout-content > div > div > div > div > div.layout-sidebar-primary > ul > li.list-progress-item.current.ListProgressItem-item-0-2-5 > div.list-progress-item-content.ListProgressItem-content-0-2-4 > div > ul > li");
+        await page.click("#checkout-root > div > div.frame-checkout-content > div > div > div > div > div.layout-sidebar-primary > ul > li.list-progress-item.current.ListProgressItem-item-0-2-5 > div.list-progress-item-content.ListProgressItem-content-0-2-4 > div > ul > li");
       });
 
     step("Step 5: React checkout check T&C and choose payment method", async () => {
@@ -89,7 +91,7 @@ describe.skip("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT", () => {
       //Wait for maksekeskus confirmation
       await page.waitAndClick(".btn-success");
       await page.waitAndClick(".btn-success");
-      //WAit for success page
+      //Wait for success page
       await page.waitForSelector(".checkout-success");
     });
 

@@ -10,7 +10,7 @@ let alpi = require("../lib/constants/alpiConst");
 
 const { makePostRequest } = require('../lib/helpers');
 
-describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST", () => {
+describe.skip("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST", () => {
   let page;
   let homepage;
   let loginPage;

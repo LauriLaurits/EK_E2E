@@ -7,7 +7,7 @@ import LoginPage from "../../../pages/LoginPage";
 
 let constants = require("../../../lib/constants/constants");
 
-describe.skip("SHOP FLOW FOR NON CUSTOMER BUYING DEFAULT PRODUCT", () => {
+describe("SHOP FLOW FOR GUEST BUYING DEFAULT PRODUCT", () => {
   let page;
   let homepage;
   let loginPage;
@@ -20,7 +20,7 @@ describe.skip("SHOP FLOW FOR NON CUSTOMER BUYING DEFAULT PRODUCT", () => {
   after(async () => {
     await page.close();
   });
-  describe("E2E Shopflow buying default products as non customer", () => {
+  describe("E2E Shopflow buying default products as guest", () => {
     step("Step 1: Adding default product with link to cart ", async () => {
       await page.goto("https://www.staging.apotheka.ee/products/link/add/pmm0100409ee",{ waitUntil: "networkidle0" });
       await homepage.navigation();
@@ -40,39 +40,39 @@ describe.skip("SHOP FLOW FOR NON CUSTOMER BUYING DEFAULT PRODUCT", () => {
           await page.waitForSelector(".summary-title");
           //const orderNumber = await page.getText(".summary-title");
           //Keelan saadetise üleandmise alaealisele
-          await page.waitAndClick(constants.selectors.underAge);
+          await page.waitAndClick(".checkbox-with-label:nth-of-type(1) .checkbox-with-label-label");
           //Anda üle vaid kontaktisikule
-          await page.waitAndClick(constants.selectors.onlyContact);
+          await page.waitAndClick(".checkbox-with-label:nth-of-type(2) .checkbox-with-label-label");
           //Sisesta lubatud isikukood
-          await page.waitAndType(constants.selectors.personalCode,constants.formCredentials.personalCode);
+          await page.waitAndType(".control-input-input","39010102711");
           //Info kullerile
-          await page.waitAndType(constants.selectors.message,constants.formCredentials.message);
-          await page.isElementVisible(constants.selectors.submitFirst);
-          await page.click(constants.selectors.submitFirst);
+          await page.waitAndType(".control-textarea-textarea","Testinfo Kullerile");
+          await page.isElementVisible(".button-inner .text");
+          await page.click(".button-inner .text");
     });
 
     step("Step 3: React checkout fill contact information", async () => {
         //Email
-        await page.waitAndType(constants.selectors.email,constants.formCredentials.email);
+        await page.waitAndType(".layout-form-column:nth-of-type(1) [type]","lauri@upitech.ee");
         //Firstname
-        await page.waitAndType(constants.selectors.firstName,constants.formCredentials.firstName);
+        await page.waitAndType(".layout-form-column:nth-of-type(2) .form-row:nth-of-type(1) [type]","Lauri");
         //Lastname
-        await page.waitAndType(constants.selectors.lastName,constants.formCredentials.lastName);
+        await page.waitAndType(".layout-form-has-columns .form-row:nth-of-type(2) [type]","Laurits");
         //Telephone
-        await page.waitAndType(constants.selectors.phoneNumber,constants.formCredentials.phoneNumber);
+        await page.waitAndType(".form-row:nth-of-type(3) [type]","55555555");
         //County
         await page.waitAndClick(".control-select.has-value.size-default");
         await page.waitAndClick("[class='bp3-menu menu menu-layout-default Menu-menu-0-2-6'] li:nth-of-type(3) div");
         //City
-        await page.waitAndType(constants.selectors.city,constants.formCredentials.city);
+        await page.waitAndType(".form-row:nth-of-type(5) [type]","Tartu");
         //Aadress
-        await page.waitAndType(constants.selectors.aadress,constants.formCredentials.aadress);
+        await page.waitAndType(".form-row:nth-of-type(6) [type]","Tamme 18");
         //Zipcode
-        await page.waitAndType(constants.selectors.zipCode,constants.formCredentials.zipCode
+        await page.waitAndType(".form-row:nth-of-type(7) [type]","11318"
         );
         //Wait for button
-        await page.isElementVisible(constants.selectors.submitSecond);
-        await page.click(constants.selectors.submitSecond);
+        await page.isElementVisible("#checkout-root > div > div.frame-checkout-content > div > div > div > div > div.layout-sidebar-primary > ul > li.list-progress-item.current.ListProgressItem-item-0-2-5 > div.list-progress-item-content.ListProgressItem-content-0-2-4 > div > ul > li");
+        await page.click("#checkout-root > div > div.frame-checkout-content > div > div > div > div > div.layout-sidebar-primary > ul > li.list-progress-item.current.ListProgressItem-item-0-2-5 > div.list-progress-item-content.ListProgressItem-content-0-2-4 > div > ul > li");
       });
 
     step("Step 4: React checkout check T&C and choose payment method", async () => {

@@ -20,7 +20,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var constants = require("../../../lib/constants/constants");
 
-describe.skip("ADDING PRODUCTS TO CART FOR NON CUSTOMER", function () {
+describe("ADDING PRODUCTS TO CART FOR GUEST", function () {
   var page = void 0;
   var homepage = void 0;
   var loginPage = void 0;
@@ -44,7 +44,7 @@ describe.skip("ADDING PRODUCTS TO CART FOR NON CUSTOMER", function () {
     await page.close();
   });
 
-  describe("Adding DEFAULT Products for Non Customers", function () {
+  describe("Adding default products for guest", function () {
     (0, _mochaSteps.step)("Step 1.1: Adding from listview", async function () {
       await page.goto("https://www.staging.apotheka.ee/tooted/ilu/huulepulgad", { waitUntil: 'networkidle0' });
       await homepage.navigation();

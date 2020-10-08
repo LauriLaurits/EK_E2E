@@ -7,7 +7,7 @@ import LoginPage from "../../../pages/LoginPage";
 
 let constants = require("../../../lib/constants/constants");
 
-describe.skip("SHOP FLOW FOR NON CUSTOMER BUYING OTC PRODUCT", () => {
+describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT", () => {
   let page;
   let homepage;
   let loginPage;
@@ -21,24 +21,37 @@ describe.skip("SHOP FLOW FOR NON CUSTOMER BUYING OTC PRODUCT", () => {
     await page.close();
   });
 
-  describe("E2E Shopflow buying OTC products as non customer", () => {
-    step("Step 1: Adding OTC to Cart from detailview", async () => {
+  describe("E2E Shopflow buying VET products as guest", () => {
+    step("Step 1: Adding from detailview on open times", async () => {
       await page.goto(
-        "https://www.staging.apotheka.ee/bisacodyl-gsk-rektaalsuposiit-10mg-n10-pmm0000489ee",{ waitUntil: 'networkidle0'});
+        "https://www.staging.apotheka.ee/frontline-combo-cats-tapilahus-100mg-120mg-ml-0-5ml-n1-pmm0099719ee",{ waitUntil: 'networkidle0'});
       await homepage.navigation();
       await page.waitAndClick(".btn-addtocart");
-      await page.clickHelp(".popup-content .control > .input-text");
-      await page.waitAndType(".popup-content .control > .input-text", "23");
-      await page.clickHelp("[id='usage_symptom\[0\]']");
-      await page.clickHelp("#verify-addtocart > div > ul > li:nth-child(3) > button");
-      //Procuct added to cart expect subtototal to be greater than 0€
-      await page.waitForSelector(".item-info");
-      expect(await page.getText(".subtotal")).not.to.equal("0.00 €");
-      await page.waitForSelector(".item-info .product-item-name");
-      expect(await page.getText(".item-info .product-item-name")).to.include("BISACODYL");
-      await page.waitAndClick(".primary.checkout");
-      await page.waitForSelector("#checkout-root");
-      expect(await page.url()).to.equal("https://www.staging.apotheka.ee/fast/checkout/index/");
+      await page.waitForSelector("#verify-vet");
+      await page.waitForSelector("#animal_species");
+      await page.waitAndType("#animal_species", "Karu");
+      await page.waitForSelector("#animal_weight");
+      await page.waitAndType("#animal_weight", "300kg");
+      await page.waitForSelector("#animal_age");
+      await page.waitAndType("#animal_age", "11 aastat");
+      await page.waitForSelector("form#verify-text-form > .fieldset textarea#comment");
+      await page.waitAndType("form#verify-text-form > .fieldset textarea#comment", "Karu sööb mett");
+      await page.isElementVisible("div#verify-vet  .actions01.mobile-stretch > li:nth-of-type(2) > .btn.ico-chat.type02");
+      await page.click("div#verify-vet  .actions01.mobile-stretch > li:nth-of-type(2) > .btn.ico-chat.type02");
+      await page.waitAndClick(".buttons li:nth-of-type(2) span");
+      expect(await page.getText(".message-queue")).to.include("Oled järjekorras");
+  });
+  step("Step 2: Adding with link", async () => {
+    await page.goto("https://www.staging.apotheka.ee/products/link/add/pmm0099719ee",{ waitUntil: 'networkidle0'}); 
+    await homepage.navigation();
+    expect(await page.getText(".subtotal")).not.to.equal("0.00 €");
+    await homepage.navigation();
+    await page.waitAndClick(".subtotal");
+    await page.waitForSelector(".item-info .product-item-name");
+    expect(await page.getText(".item-info .product-item-name")).to.include("FRONTLINE");
+    await page.waitAndClick(".primary.checkout");
+    await page.waitForSelector("#checkout-root");
+    expect(await page.url()).to.equal("https://www.staging.apotheka.ee/fast/checkout/index/");
   });
   step("Step 2: React checkout choose shipping method and fill necessary fields", async () => {
     // Choose Smartpost pakiautomaat
@@ -48,25 +61,25 @@ describe.skip("SHOP FLOW FOR NON CUSTOMER BUYING OTC PRODUCT", () => {
     //const orderNumber = await page.getText(".summary-title");
     //console.log("Order Nr. React: " + orderNumber);
     //Wait for dropdown and click on it
-    await page.waitAndClick(".control-select-select");
+    await page.clickHelp(".control-select-select");
     //Choose value
     await page.waitAndClick("body > div.bp3-portal > div > div > div > div > ul > li:nth-child(6) > a > div");
     //Wait for Continue button to be enabled
-    await page.isElementVisible(constants.selectors.submitFirst);
+    await page.isElementVisible(".button-inner .text");
     //Click Continue
-    await page.click(constants.selectors.submitFirst);
+    await page.click(".button-inner .text");
   });
   step("Step 3: React checkout fill short contact information", async () => {
     //Email
-    await page.waitAndType(constants.selectors.email,constants.formCredentials.email);
+    await page.waitAndType(".layout-form-column:nth-of-type(1) [type]","lauri@upitech.ee");
     //Firstname
-    await page.waitAndType(constants.selectors.firstName,constants.formCredentials.firstName);
+    await page.waitAndType(".layout-form-column:nth-of-type(2) .form-row:nth-of-type(1) [type]","Lauri");
     //Lastname
-    await page.waitAndType(constants.selectors.lastName,constants.formCredentials.lastName);
+    await page.waitAndType(".layout-form-has-columns .form-row:nth-of-type(2) [type]","Laurits");
     //Telephone
-    await page.waitAndType(constants.selectors.phoneNumber,constants.formCredentials.phoneNumber);
-    //Click Continue
-    await page.click(constants.selectors.submitSecond);
+    await page.waitAndType(".form-row:nth-of-type(3) [type]","55555555");
+   //Click Continue
+   await page.click("#checkout-root > div > div.frame-checkout-content > div > div > div > div > div.layout-sidebar-primary > ul > li.list-progress-item.current.ListProgressItem-item-0-2-5 > div.list-progress-item-content.ListProgressItem-content-0-2-4 > div > ul > li");
   });
   step("Step 4: React checkout check T&C and choose payment method", async () => {
     //Terms and conditions checkbox
@@ -80,6 +93,7 @@ describe.skip("SHOP FLOW FOR NON CUSTOMER BUYING OTC PRODUCT", () => {
   });
   step("Step 5: Maksekeskuse test environment", async () => {
     //Wait for maksekeskus
+
     //Wait for maksekeskus confirmation
     await page.waitAndClick(".btn-success");
     await page.waitAndClick(".btn-success");
@@ -102,6 +116,5 @@ describe.skip("SHOP FLOW FOR NON CUSTOMER BUYING OTC PRODUCT", () => {
     expect(successOrderNumber).to.equal(getXMLOrderId);
 
   });
-
 });
 });

@@ -20,7 +20,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var constants = require("../../../lib/constants/constants");
 
-describe.skip("SHOP FLOW FOR NON CUSTOMER BUYING OTC PRODUCT", function () {
+describe("SHOP FLOW FOR GUEST BUYING OTC PRODUCT", function () {
   var page = void 0;
   var homepage = void 0;
   var loginPage = void 0;
@@ -34,7 +34,7 @@ describe.skip("SHOP FLOW FOR NON CUSTOMER BUYING OTC PRODUCT", function () {
     await page.close();
   });
 
-  describe("E2E Shopflow buying OTC products as non customer", function () {
+  describe("E2E Shopflow buying OTC products as guest", function () {
     (0, _mochaSteps.step)("Step 1: Adding OTC to Cart from detailview", async function () {
       await page.goto("https://www.staging.apotheka.ee/bisacodyl-gsk-rektaalsuposiit-10mg-n10-pmm0000489ee", { waitUntil: 'networkidle0' });
       await homepage.navigation();
@@ -64,21 +64,21 @@ describe.skip("SHOP FLOW FOR NON CUSTOMER BUYING OTC PRODUCT", function () {
       //Choose value
       await page.waitAndClick("body > div.bp3-portal > div > div > div > div > ul > li:nth-child(6) > a > div");
       //Wait for Continue button to be enabled
-      await page.isElementVisible(constants.selectors.submitFirst);
+      await page.isElementVisible(".button-inner .text");
       //Click Continue
-      await page.click(constants.selectors.submitFirst);
+      await page.click(".button-inner .text");
     });
     (0, _mochaSteps.step)("Step 3: React checkout fill short contact information", async function () {
       //Email
-      await page.waitAndType(constants.selectors.email, constants.formCredentials.email);
+      await page.waitAndType(".layout-form-column:nth-of-type(1) [type]", "lauri@upitech.ee");
       //Firstname
-      await page.waitAndType(constants.selectors.firstName, constants.formCredentials.firstName);
+      await page.waitAndType(".layout-form-column:nth-of-type(2) .form-row:nth-of-type(1) [type]", "Lauri");
       //Lastname
-      await page.waitAndType(constants.selectors.lastName, constants.formCredentials.lastName);
+      await page.waitAndType(".layout-form-has-columns .form-row:nth-of-type(2) [type]", "Laurits");
       //Telephone
-      await page.waitAndType(constants.selectors.phoneNumber, constants.formCredentials.phoneNumber);
+      await page.waitAndType(".form-row:nth-of-type(3) [type]", "55555555");
       //Click Continue
-      await page.click(constants.selectors.submitSecond);
+      await page.click("#checkout-root > div > div.frame-checkout-content > div > div > div > div > div.layout-sidebar-primary > ul > li.list-progress-item.current.ListProgressItem-item-0-2-5 > div.list-progress-item-content.ListProgressItem-content-0-2-4 > div > ul > li");
     });
     (0, _mochaSteps.step)("Step 4: React checkout check T&C and choose payment method", async function () {
       //Terms and conditions checkbox

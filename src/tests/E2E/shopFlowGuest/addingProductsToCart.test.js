@@ -7,7 +7,7 @@ import LoginPage from "../../../pages/LoginPage";
 
 let constants = require("../../../lib/constants/constants");
 
-describe.skip("ADDING PRODUCTS TO CART FOR NON CUSTOMER", () => {
+describe("ADDING PRODUCTS TO CART FOR GUEST", () => {
   let page;
   let homepage;
   let loginPage;
@@ -31,7 +31,7 @@ describe.skip("ADDING PRODUCTS TO CART FOR NON CUSTOMER", () => {
     await page.close();
   });
 
-  describe("Adding DEFAULT Products for Non Customers", () => {
+  describe("Adding default products for guest", () => {
     step("Step 1.1: Adding from listview", async () => {
       await page.goto("https://www.staging.apotheka.ee/tooted/ilu/huulepulgad",{ waitUntil: 'networkidle0'});
       await homepage.navigation();

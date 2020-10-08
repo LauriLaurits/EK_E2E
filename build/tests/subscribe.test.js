@@ -24,7 +24,7 @@ var alpi = require("../lib/constants/alpiConst");
 var _require = require('../lib/helpers'),
     makePostRequest = _require.makePostRequest;
 
-describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST", function () {
+describe.skip("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST", function () {
   var page = void 0;
   var homepage = void 0;
   var loginPage = void 0;
