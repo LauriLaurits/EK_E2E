@@ -247,35 +247,4 @@ export default class LoginPage {
     }
     await this.page.waitFor(4000);
   }
- /*  async deleteCustomerFromMagentoLoggedOut(backend_url, username, password) {
-    await this.page.goto(backend_url, { waitUntil: "networkidle0" });
-    await this.page.waitAndClick("#username");
-    await this.page.waitAndType("#username", username);
-    await this.page.waitAndClick("#login");
-    await this.page.waitAndType("#login", password);
-    await this.page.waitAndClick(".action-primary");
-    await this.page.waitAndClick(".action-close");
-    const customerDetailsUrl = await this.page.getHref(
-      ".item-customer-manage.level-1 a"
-    );
-    await this.page.goto(customerDetailsUrl[0]);
-
-    const getCustomerID = await this.page.getText(
-      "tr:nth-of-type(2) > td:nth-of-type(2) > .data-grid-cell-content"
-    );
-    await this.page.goto(
-      "https://www.staging.apotheka.ee/MMadmin/customer/index/edit/id/" +
-        getCustomerID
-    );
-    await this.page.waitForSelector(".admin__page-nav");
-    await this.page.clickHelp("#customer-edit-delete-button");
-    //await this.page.waitForSelector("aside:nth-of-type(1)  .modal-header");
-    await this.page.waitFor(200);
-    await this.page.clickHelp(".action-accept.action-primary");
-
-    const deleteMessage = await this.page.getText(
-      ".message.message-success.success"
-    );
-    expect(deleteMessage).to.include("You deleted the customer.");
-  } */
 }
