@@ -28,8 +28,8 @@ var Builder = function () {
       var browser = await _puppeteer2.default.launch(launchOptions);
       var page = await browser.newPage();
       var extendedPage = new Builder(page);
-      page.setDefaultTimeout(20000);
-      page.setDefaultNavigationTimeout(20000);
+      page.setDefaultTimeout(30000);
+      page.setDefaultNavigationTimeout(30000);
       //Diffrent ViewPorts
       switch (viewport) {
         case "Mobile":

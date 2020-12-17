@@ -18,12 +18,15 @@ describe("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT", () => {
     page = await Page.build("Desktop");
     homepage = new HomePage(page);
     loginPage = new LoginPage(page);
+    //Check if cutomer is deleted from Magento and ALPI
+    await loginPage.checkAndDeleteAlpi(config.alpiUsername,config.alpiPassword, config.personalCode);
+    await loginPage.checkAndDeleteMagento(config.magentoUsername,config.magentoPassword, config.name);
   });
   after(async () => {
     //Delete Customer from Magento
-    await loginPage.deleteCustomerFromMagentoLoggedOut(config.magentoUsername,config.magentoPassword);
+    await loginPage.checkAndDeleteMagento(config.magentoUsername,config.magentoPassword, config.name);
     //Delete Customer from TestALPI
-    await loginPage.deleteCustomerFromAlpi(config.alpiUsername,config.alpiPassword, config.personalCode);
+    await loginPage.checkAndDeleteAlpi(config.alpiUsername,config.alpiPassword, config.personalCode);
     //Close Browser
     await page.close();
   });

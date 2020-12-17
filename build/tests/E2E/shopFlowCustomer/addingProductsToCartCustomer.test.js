@@ -31,6 +31,11 @@ describe("ADDING PRODUCTS TO CART FOR CUSTOMER", function () {
     page = await _builder2.default.build("Desktop");
     homepage = new _HomePage2.default(page);
     loginPage = new _LoginPage2.default(page);
+    //Check if cutomer is deleted from Magento and ALPI
+    await loginPage.checkAndDeleteAlpi(config.alpiUsername, config.alpiPassword, config.personalCode);
+    await loginPage.checkAndDeleteMagento(config.magentoUsername, config.magentoPassword, config.name);
+    //Make new Customer
+    await loginPage.newCustomer(config.personalCode, config.phoneNumber, config.email);
   });
   afterEach(async function () {
     //Empty Cart
@@ -38,8 +43,10 @@ describe("ADDING PRODUCTS TO CART FOR CUSTOMER", function () {
     await homepage.navigation();
   });
   after(async function () {
-    //Logout Magento
-    await loginPage.logOutMagento();
+    //Delete Customer from Magento
+    await loginPage.checkAndDeleteMagento(config.magentoUsername, config.magentoPassword, config.name);
+    //Delete Customer from TestALPI
+    await loginPage.checkAndDeleteAlpi(config.alpiUsername, config.alpiPassword, config.personalCode);
     //Close Browser
     await page.close();
   });
@@ -47,7 +54,7 @@ describe("ADDING PRODUCTS TO CART FOR CUSTOMER", function () {
     (0, _mochaSteps.step)("Step 2.1: Adding from listview", async function () {
       //await loginPage.loginMobileID(config.baseUrl + "","37200000566");
       //Make new Customer
-      await loginPage.loginSmartID(config.smartId);
+      //await loginPage.newCustomer(config.personalCode,config.phoneNumber,config.email);
       await page.goto(config.baseUrl + "/tooted/ilu/huulepulgad", { waitUntil: 'networkidle0' });
       await homepage.navigation();
       await page.waitAndClick(".product-item:nth-of-type(1) .tocart");

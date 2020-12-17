@@ -20,7 +20,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var constants = require("../../../lib/constants/constants");
 
-describe("ADDING PRODUCTS TO CART FOR GUEST", function () {
+describe.skip("ADDING PRODUCTS TO CART FOR GUEST", function () {
   var page = void 0;
   var homepage = void 0;
   var loginPage = void 0;

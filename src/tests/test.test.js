@@ -5,12 +5,14 @@ import Page from "../lib/builder";
 import HomePage from "../pages/HomePage";
 import LoginPage from "../pages/LoginPage";
 
+const config = require("../lib/config");
+
 let constants = require("../lib/constants/constants");
 let alpi = require("../lib/constants/alpiConst");
 
-const { makePostRequest } = require('../lib/helpers');
+const { makeGetRequest } = require("../lib/helpers");
 
-describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST", () => {
+describe.skip("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST", () => {
   let page;
   let homepage;
   let loginPage;
@@ -20,26 +22,50 @@ describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST", () => {
     homepage = new HomePage(page);
     loginPage = new LoginPage(page);
   });
-  
+
   after(async () => {
     //Close Browser
     await page.close();
   });
-  
 
   describe("Test Describe  ", () => {
-   /*  step("Test", async () => {
-        await loginPage.checkAndDeleteAlpi("38610102716");
-    }); */
-    /* step("Test NewCustomer", async () => {
-        await loginPage.newCustomer();
-    }); */
-    step("Test Magento", async ()=> {
-        await loginPage.checkAndDeleteMagento(constants.unSusubscribe.backendUrl, constants.unSusubscribe.mbUsername, constants.unSusubscribe.mbPassword);
-        //await loginPage.deleteCustomerFromMagentoLoggedOut(constants.unSusubscribe.backendUrl, constants.unSusubscribe.mbUsername, constants.unSusubscribe.mbPassword);
-
-    })
+    step("test postmann", async () => {
+      const data = await makeGetRequest(
+        config.requestUrlProgress,
+        config.productCodeApotheka
+      );
+      console.log(data.data[0].in_stock);
     });
+    step("Step 1.1: Adding from listview", async () => {
+      const progressStock = await makeGetRequest(
+        config.requestUrlProgress,
+        config.productCodeApotheka
+      );
+      if (progressStock.data[0].in_stock >= 1) {
+        await page.goto(config.baseUrl, { waitUntil: "networkidle0" });
+        await homepage.navigation();
+        await page.waitAndClick("#search");
+        await page.waitAndType("#search", "P" + config.productCodeApotheka);
+        await page.keyboard.press("Enter");
+        await page.waitAndClick(".product-item:nth-of-type(1) .tocart");
+        await page.waitForSelector(".counter-number");
+        await homepage.navigation();
+        expect(await page.getText(".subtotal")).not.to.equal("0.00 €");
+        await homepage.navigation();
+        await page.waitAndClick(".subtotal");
+        await page.waitForSelector(".item-info .product-item-name");
+        const productName = await makeGetRequest(
+          config.requestUrlProgress,
+          config.productCodeApotheka
+        );
+        expect(await page.getText(".item-info .product-item-name")).to.include(
+          productName.data[0].name
+        );
+      } else {
+        console.log(
+          "Product " + config.productCodeApotheka + " is out of stock"
+        );
+      }
+    });
+  });
 });
-   
- 

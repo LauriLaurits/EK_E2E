@@ -24,7 +24,7 @@ describe("SHOP FLOW FOR GUEST BUYING OTC PRODUCT", () => {
   describe("E2E Shopflow buying OTC products as guest", () => {
     step("Step 1: Adding OTC to Cart from detailview", async () => {
       await page.goto(
-        "https://www.staging.apotheka.ee/bisacodyl-gsk-rektaalsuposiit-10mg-n10-pmm0000489ee",{ waitUntil: 'networkidle0'});
+        "https://www.staging.apotheka.ee/smecta-suukaudse-susp-pulber-3g-n10-pmm0010809ee",{ waitUntil: 'networkidle0'});
       await homepage.navigation();
       await page.waitAndClick(".btn-addtocart");
       await page.clickHelp(".popup-content .control > .input-text");
@@ -35,7 +35,7 @@ describe("SHOP FLOW FOR GUEST BUYING OTC PRODUCT", () => {
       await page.waitForSelector(".item-info");
       expect(await page.getText(".subtotal")).not.to.equal("0.00 €");
       await page.waitForSelector(".item-info .product-item-name");
-      expect(await page.getText(".item-info .product-item-name")).to.include("BISACODYL");
+      expect(await page.getText(".item-info .product-item-name")).to.include("SMECTA");
       await page.waitAndClick(".primary.checkout");
       await page.waitForSelector("#checkout-root");
       expect(await page.url()).to.equal("https://www.staging.apotheka.ee/fast/checkout/index/");

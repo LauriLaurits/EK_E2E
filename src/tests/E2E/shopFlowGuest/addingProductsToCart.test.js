@@ -7,7 +7,7 @@ import LoginPage from "../../../pages/LoginPage";
 
 let constants = require("../../../lib/constants/constants");
 
-describe("ADDING PRODUCTS TO CART FOR GUEST", () => {
+describe.skip("ADDING PRODUCTS TO CART FOR GUEST", () => {
   let page;
   let homepage;
   let loginPage;

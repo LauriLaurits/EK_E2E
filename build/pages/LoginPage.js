@@ -20,6 +20,8 @@ var LoginPage = function () {
 
     this.page = page;
   }
+  //TODO if newcustomer is already customer how to continue
+
 
   _createClass(LoginPage, [{
     key: "newCustomer",
@@ -27,8 +29,8 @@ var LoginPage = function () {
       await this.page.goto(config.baseUrl);
       await this.page.waitAndClick("#registration_link");
       await this.page.waitForSelector("#horizontal_tabs");
-      await this.page.waitAndClick("div#mobileid-login > .fieldset input[name='personalcode']");
-      await this.page.waitAndType("div#mobileid-login > .fieldset input[name='personalcode']", personalCode);
+      await this.page.waitAndClick("div#login-mobile-id > .fieldset input[name='personalcode']");
+      await this.page.waitAndType("div#login-mobile-id > .fieldset input[name='personalcode']", personalCode);
       await this.page.waitAndClick("#mobile-id-input");
       await this.page.waitAndType("#mobile-id-input", phoneNumber);
       await this.page.click("#mobileid-submit");
@@ -40,6 +42,7 @@ var LoginPage = function () {
       await this.page.waitAndClick(".create.fieldset.info input#telephone");
       await this.page.waitAndType(".create.fieldset.info input#telephone", phoneNumber);
       await this.page.waitAndClick("#terms");
+      await this.page.waitAndClick("#is_subscribed");
       await this.page.waitAndClick("#submit");
       await this.page.waitForSelector(".authorization-link.logged-in");
     }
@@ -47,13 +50,17 @@ var LoginPage = function () {
 
   }, {
     key: "loginMobileID",
-    value: async function loginMobileID(mobileId) {
+    value: async function loginMobileID(personalCode, phoneNumber) {
       await this.page.goto(config.baseUrl);
       await this.page.waitAndClick("#registration_link");
+      await this.page.waitForSelector("#horizontal_tabs");
+      await this.page.waitAndClick("div#mobileid-login > .fieldset input[name='personalcode']");
+      await this.page.waitAndType("div#mobileid-login > .fieldset input[name='personalcode']", personalCode);
       await this.page.waitAndClick("#mobile-id-input");
-      await this.page.waitAndType("#mobile-id-input", mobileId);
-      await this.page.waitAndClick("#mobileid-submit");
+      await this.page.waitAndType("#mobile-id-input", phoneNumber);
+      await this.page.click("#mobileid-submit");
       await this.page.isElementVisible("#mobileid-verification");
+      (0, _chai.expect)((await this.page.isElementVisible("#mobileid-verification"))).to.be.true;
       await this.page.waitForSelector(".authorization-link.logged-in");
     }
   }, {
@@ -204,15 +211,19 @@ var LoginPage = function () {
       await this.page.waitAndClick("input[value='Otsi']");
       var client = await this.page.isElementVisible(".dropCard");
       if (client) {
+        console.log("Test1 " + client);
         await this.page.waitAndClick(".dropCard");
         await this.page.waitForSelector(".ui-dialog-buttonset");
         await this.page.keyboard.press("Enter");
         await this.page.keyboard.press("Enter");
+      } else {
+        console.log("Test" + client);
+        (0, _chai.expect)(client).to.be.false;
       }
     }
   }, {
     key: "checkAndDeleteMagento",
-    value: async function checkAndDeleteMagento(userName, passWord) {
+    value: async function checkAndDeleteMagento(userName, passWord, name) {
       await this.page.goto(config.backendUrl, { waitUntil: "networkidle0" });
       await this.page.waitAndClick("#username");
       await this.page.waitAndType("#username", userName);
@@ -232,7 +243,7 @@ var LoginPage = function () {
       //Kui see on olemas cliki seda .action-remove
       await this.page.clickHelp(".admin__data-grid-outer-wrap > .admin__data-grid-header .action-default");
       await this.page.waitAndClick("input[name='name']");
-      await this.page.waitAndType("input[name='name']", "MARY ÄNN O’CONNEŽ-ŠUSLIK TESTNUMBER");
+      await this.page.waitAndType("input[name='name']", name);
       await this.page.keyboard.press("Enter");
       await this.page.keyboard.press("Enter");
       //await this.page.waitAndClickTwo(".action-secondary > span");
@@ -243,7 +254,7 @@ var LoginPage = function () {
       if (activeFilter) {
         var getCustomerID = await this.page.getText("tr:nth-of-type(2) > td:nth-of-type(2) > .data-grid-cell-content");
         var getUserName = await this.page.getText("td:nth-of-type(3) > .data-grid-cell-content");
-        (0, _chai.expect)(getUserName).to.include("MARY ÄNN O’CONNEŽ-ŠUSLIK TESTNUMBER");
+        (0, _chai.expect)(getUserName).to.include(name);
         await this.page.goto(config.backendUrl + "/customer/index/edit/id/" + getCustomerID);
         await this.page.waitForSelector(".admin__page-nav");
         await this.page.clickHelp("#customer-edit-delete-button");
@@ -255,6 +266,47 @@ var LoginPage = function () {
         (0, _chai.expect)(deleteMessage).to.include("You deleted the customer.");
       }
       await this.page.waitFor(4000);
+    }
+  }, {
+    key: "checkAndDeleteMagentoLoggedIn",
+    value: async function checkAndDeleteMagentoLoggedIn(name) {
+      await this.page.goto(config.backendUrl, { waitUntil: "networkidle0" });
+      var popup = await this.page.isElementVisible(".action-primary");
+      if (popup) {
+        await this.page.waitAndClick(".action-primary");
+        await this.page.waitAndClick(".action-close");
+      }
+      var customerDetailsUrl = await this.page.getHref(".item-customer-manage.level-1 a");
+      await this.page.goto(customerDetailsUrl[0], { waitUntil: "networkidle0" });
+      var removeFilter = await this.page.isElementVisible(".action-remove");
+      if (removeFilter) {
+        await this.page.waitAndClick(".action-remove");
+      }
+      //Kui see on olemas cliki seda .action-remove
+      await this.page.clickHelp(".admin__data-grid-outer-wrap > .admin__data-grid-header .action-default");
+      await this.page.waitAndClick("input[name='name']");
+      await this.page.waitAndType("input[name='name']", name);
+      await this.page.keyboard.press("Enter");
+      await this.page.keyboard.press("Enter");
+      //await this.page.waitAndClickTwo(".action-secondary > span");
+      await this.page.waitFor(1000);
+      await this.page.waitForSelector(".admin__data-grid-header .admin__current-filters-list > li > span:nth-of-type(2)");
+      //const result = await this.page.isElementVisible("tr:nth-of-type(2) > td:nth-of-type(2) > .data-grid-cell-content");
+      var activeFilter = await this.page.isElementVisible("tr:nth-of-type(2) > td:nth-of-type(2) > .data-grid-cell-content");
+      if (activeFilter) {
+        var getCustomerID = await this.page.getText("tr:nth-of-type(2) > td:nth-of-type(2) > .data-grid-cell-content");
+        var getUserName = await this.page.getText("td:nth-of-type(3) > .data-grid-cell-content");
+        (0, _chai.expect)(getUserName).to.include(name);
+        await this.page.goto(config.backendUrl + "/customer/index/edit/id/" + getCustomerID);
+        await this.page.waitForSelector(".admin__page-nav");
+        await this.page.clickHelp("#customer-edit-delete-button");
+        //await this.page.waitForSelector("aside:nth-of-type(1)  .modal-header");
+        await this.page.waitFor(200);
+        await this.page.clickHelp(".action-accept.action-primary");
+
+        var deleteMessage = await this.page.getText(".message.message-success.success");
+        (0, _chai.expect)(deleteMessage).to.include("You deleted the customer.");
+      }
     }
   }]);
 

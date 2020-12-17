@@ -18,6 +18,11 @@ describe("ADDING PRODUCTS TO CART FOR CUSTOMER", () => {
     page = await Page.build("Desktop");
     homepage = new HomePage(page);
     loginPage = new LoginPage(page);
+    //Check if cutomer is deleted from Magento and ALPI
+    await loginPage.checkAndDeleteAlpi(config.alpiUsername,config.alpiPassword, config.personalCode);
+    await loginPage.checkAndDeleteMagento(config.magentoUsername,config.magentoPassword, config.name);
+    //Make new Customer
+    await loginPage.newCustomer(config.personalCode,config.phoneNumber,config.email);
   });
   afterEach(async () => {
     //Empty Cart
@@ -25,16 +30,18 @@ describe("ADDING PRODUCTS TO CART FOR CUSTOMER", () => {
     await homepage.navigation();
   }); 
   after(async () => {
-    //Logout Magento
-    await loginPage.logOutMagento();
-    //Close Browser
-    await page.close();
+   //Delete Customer from Magento
+   await loginPage.checkAndDeleteMagento(config.magentoUsername,config.magentoPassword, config.name);
+   //Delete Customer from TestALPI
+   await loginPage.checkAndDeleteAlpi(config.alpiUsername,config.alpiPassword, config.personalCode);
+   //Close Browser
+   await page.close();
   });
   describe("Adding DEFAULT Products for Customer", () => {
         step("Step 2.1: Adding from listview", async () => {
             //await loginPage.loginMobileID(config.baseUrl + "","37200000566");
             //Make new Customer
-            await loginPage.loginSmartID(config.smartId);
+            //await loginPage.newCustomer(config.personalCode,config.phoneNumber,config.email);
             await page.goto(config.baseUrl + "/tooted/ilu/huulepulgad",{ waitUntil: 'networkidle0'});
             await homepage.navigation();
             await page.waitAndClick(".product-item:nth-of-type(1) .tocart");

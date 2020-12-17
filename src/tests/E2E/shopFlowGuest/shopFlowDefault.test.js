@@ -5,7 +5,8 @@ import Page from "../../../lib/builder";
 import HomePage from "../../../pages/HomePage";
 import LoginPage from "../../../pages/LoginPage";
 
-let constants = require("../../../lib/constants/constants");
+const config = require("../../../lib/config");
+const { makeGetRequest } = require("../../../lib/helpers");
 
 describe("SHOP FLOW FOR GUEST BUYING DEFAULT PRODUCT", () => {
   let page;
@@ -21,18 +22,39 @@ describe("SHOP FLOW FOR GUEST BUYING DEFAULT PRODUCT", () => {
     await page.close();
   });
   describe("E2E Shopflow buying default products as guest", () => {
-    step("Step 1: Adding default product with link to cart ", async () => {
-      await page.goto("https://www.staging.apotheka.ee/products/link/add/pmm0100409ee",{ waitUntil: "networkidle0" });
-      await homepage.navigation();
-      expect(await page.getText(".subtotal")).not.to.equal("0.00 €");
-      await homepage.navigation();
-      //await page.waitAndClick(".subtotal");
-      await page.waitForSelector(".item-info .product-item-name");
-      expect(await page.getText(".item-info .product-item-name")).to.include("BABE");
-      await page.waitAndClick(".primary.checkout");
-      await page.waitForSelector("#checkout-root");
-      expect(await page.url()).to.equal("https://www.staging.apotheka.ee/fast/checkout/index/");});
-
+    step("Step 1: Buying default product from listview", async () => {
+      const progressStock = await makeGetRequest(
+        config.requestUrlProgress,
+        config.productCodeApotheka
+      );
+      if (progressStock.data[0].in_stock >= 1) {
+        await page.goto(config.baseUrl, { waitUntil: "networkidle0" });
+        await homepage.navigation();
+        await page.waitAndClick("#search");
+        await page.waitAndType("#search", "P" + config.productCodeApotheka);
+        await page.keyboard.press("Enter");
+        await page.waitAndClick("form[method='post'] > button[title='Lisa ostukorvi']");
+        await page.waitForSelector(".item-cart-count");
+        await page.waitForSelector(".counter-number");
+        await homepage.navigation();
+        expect(await page.getText(".subtotal")).not.to.equal("0.00 €");
+        await homepage.navigation();
+        await page.waitAndClick(".subtotal");
+        await page.waitForSelector(".item-info .product-item-name");
+        const productName = await makeGetRequest(
+          config.requestUrlProgress,
+          config.productCodeApotheka
+        );
+        expect(await page.getText(".item-info .product-item-name")).to.include(productName.data[0].name);
+        await page.waitAndClick(".primary.checkout");
+        await page.waitForSelector("#checkout-root");
+        expect(await page.url()).to.equal(config.baseUrl + "/fast/checkout/index/");
+      } else {
+        console.log(
+          "Product " + config.productCodeApotheka + " is out of stock"
+        );
+      }
+    });
     step("Step 2: React checkout choose shipping method and fill necessary fields",async () => {
           //Choose shipping method
           await page.waitAndClick("[class] li:nth-of-type(4) div span");

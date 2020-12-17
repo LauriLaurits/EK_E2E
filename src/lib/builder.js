@@ -17,8 +17,8 @@ export default class Builder {
     const browser = await puppeteer.launch(launchOptions);
     const page = await browser.newPage();
     const extendedPage = new Builder(page);
-    page.setDefaultTimeout(20000);
-    page.setDefaultNavigationTimeout(20000)
+    page.setDefaultTimeout(30000);
+    page.setDefaultNavigationTimeout(30000)
     //Diffrent ViewPorts
     switch (viewport) {
       case "Mobile":
