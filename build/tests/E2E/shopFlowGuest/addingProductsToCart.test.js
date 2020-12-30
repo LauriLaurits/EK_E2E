@@ -20,7 +20,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var constants = require("../../../lib/constants/constants");
 
-describe.skip("ADDING PRODUCTS TO CART FOR GUEST", function () {
+describe.skip("ADDING PRODUCTS TO CART FOR GUEST (addingProductsToCart.test)", function () {
   var page = void 0;
   var homepage = void 0;
   var loginPage = void 0;
@@ -44,8 +44,8 @@ describe.skip("ADDING PRODUCTS TO CART FOR GUEST", function () {
     await page.close();
   });
 
-  describe("Adding default products for guest", function () {
-    (0, _mochaSteps.step)("Step 1.1: Adding from listview", async function () {
+  describe("1.Adding default products for guest", function () {
+    (0, _mochaSteps.step)("Step 1: Adding from listview", async function () {
       await page.goto("https://www.staging.apotheka.ee/tooted/ilu/huulepulgad", { waitUntil: 'networkidle0' });
       await homepage.navigation();
       await page.waitAndClick(".product-item:nth-of-type(1) .tocart");
@@ -57,7 +57,7 @@ describe.skip("ADDING PRODUCTS TO CART FOR GUEST", function () {
       await page.waitForSelector(".item-info .product-item-name");
       (0, _chai.expect)((await page.getText(".item-info .product-item-name"))).to.include("BABE");
     });
-    (0, _mochaSteps.step)("Step 1.2: Adding from detailview", async function () {
+    (0, _mochaSteps.step)("Step 2: Adding from detailview", async function () {
       await page.goto("https://www.staging.apotheka.ee/babe-huulepulk-spf20-4g-pmm0100409ee", { waitUntil: 'networkidle0' });
       await page.waitAndClick("#product-addtocart-button");
       await page.waitForSelector(".counter-number");
@@ -68,7 +68,7 @@ describe.skip("ADDING PRODUCTS TO CART FOR GUEST", function () {
       await page.waitForSelector(".item-info .product-item-name");
       (0, _chai.expect)((await page.getText(".item-info .product-item-name"))).to.include("BABE");
     });
-    (0, _mochaSteps.step)("Step 1.3: Adding with link", async function () {
+    (0, _mochaSteps.step)("Step 3: Adding with link", async function () {
       await page.goto("https://www.staging.apotheka.ee/products/link/add/pmm0100409ee", { waitUntil: 'networkidle0' });
       await homepage.navigation();
       (0, _chai.expect)((await page.getText(".subtotal"))).not.to.equal("0.00 €");
@@ -78,8 +78,8 @@ describe.skip("ADDING PRODUCTS TO CART FOR GUEST", function () {
       (0, _chai.expect)((await page.getText(".item-info .product-item-name"))).to.include("BABE");
     });
   });
-  describe.skip("Adding DEFAULT Products for Customers", function () {
-    (0, _mochaSteps.step)("Step 2.1: Adding from listview", async function () {
+  describe.skip("2.Adding DEFAULT Products for Customers", function () {
+    (0, _mochaSteps.step)("Step 1: Adding from listview", async function () {
       //await loginPage.loginMobileID("https://www.staging.apotheka.ee","37200000566");
       //Make new Customer
       await loginPage.newCustomer();
@@ -93,7 +93,7 @@ describe.skip("ADDING PRODUCTS TO CART FOR GUEST", function () {
       await page.waitForSelector(".item-info .product-item-name");
       (0, _chai.expect)((await page.getText(".item-info .product-item-name"))).to.include("BABE");
     });
-    (0, _mochaSteps.step)("Step 2.2: Adding from detailview", async function () {
+    (0, _mochaSteps.step)("Step 2: Adding from detailview", async function () {
       await page.goto("https://www.staging.apotheka.ee/babe-huulepulk-spf20-4g-pmm0100409ee", { waitUntil: 'networkidle0' });
       await page.waitAndClick("#product-addtocart-button");
       await page.waitForSelector(".counter-number");
@@ -104,7 +104,7 @@ describe.skip("ADDING PRODUCTS TO CART FOR GUEST", function () {
       await page.waitForSelector(".item-info .product-item-name");
       (0, _chai.expect)((await page.getText(".item-info .product-item-name"))).to.include("BABE");
     });
-    (0, _mochaSteps.step)("Step 2.3: Adding with link", async function () {
+    (0, _mochaSteps.step)("Step 3: Adding with link", async function () {
       await page.goto("https://www.staging.apotheka.ee/products/link/add/pmm0100409ee", { waitUntil: 'networkidle0' });
       await homepage.navigation();
       (0, _chai.expect)((await page.getText(".subtotal"))).not.to.equal("0.00 €");

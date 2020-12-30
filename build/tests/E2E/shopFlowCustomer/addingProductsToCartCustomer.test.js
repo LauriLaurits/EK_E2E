@@ -22,7 +22,7 @@ var config = require('../../../lib/config');
 
 //let constants = require("../../../lib/constants/constants");
 
-describe("ADDING PRODUCTS TO CART FOR CUSTOMER", function () {
+describe("ADDING PRODUCTS TO CART FOR CUSTOMER (addingProductsToCartCustomer.test)", function () {
   var page = void 0;
   var homepage = void 0;
   var loginPage = void 0;
@@ -32,10 +32,10 @@ describe("ADDING PRODUCTS TO CART FOR CUSTOMER", function () {
     homepage = new _HomePage2.default(page);
     loginPage = new _LoginPage2.default(page);
     //Check if cutomer is deleted from Magento and ALPI
-    await loginPage.checkAndDeleteAlpi(config.alpiUsername, config.alpiPassword, config.personalCode);
-    await loginPage.checkAndDeleteMagento(config.magentoUsername, config.magentoPassword, config.name);
+    //await loginPage.checkAndDeleteAlpi(config.alpiUsername,config.alpiPassword, config.personalCode);
+    //await loginPage.checkAndDeleteMagento(config.magentoUsername,config.magentoPassword, config.name);
     //Make new Customer
-    await loginPage.newCustomer(config.personalCode, config.phoneNumber, config.email);
+    //await loginPage.newCustomer(config.personalCode,config.phoneNumber,config.email);
   });
   afterEach(async function () {
     //Empty Cart
@@ -50,11 +50,9 @@ describe("ADDING PRODUCTS TO CART FOR CUSTOMER", function () {
     //Close Browser
     await page.close();
   });
-  describe("Adding DEFAULT Products for Customer", function () {
-    (0, _mochaSteps.step)("Step 2.1: Adding from listview", async function () {
-      //await loginPage.loginMobileID(config.baseUrl + "","37200000566");
-      //Make new Customer
-      //await loginPage.newCustomer(config.personalCode,config.phoneNumber,config.email);
+  describe("1.Adding DEFAULT Products for Customer", function () {
+    (0, _mochaSteps.step)("Step 1: Making new customer and adding product to cart from listview", async function () {
+      await loginPage.newCustomer(config.personalCode, config.phoneNumber, config.email);
       await page.goto(config.baseUrl + "/tooted/ilu/huulepulgad", { waitUntil: 'networkidle0' });
       await homepage.navigation();
       await page.waitAndClick(".product-item:nth-of-type(1) .tocart");
@@ -65,7 +63,7 @@ describe("ADDING PRODUCTS TO CART FOR CUSTOMER", function () {
       await page.waitForSelector(".item-info .product-item-name");
       (0, _chai.expect)((await page.getText(".item-info .product-item-name"))).to.include("BABE");
     });
-    (0, _mochaSteps.step)("Step 2.2: Adding from detailview", async function () {
+    (0, _mochaSteps.step)("Step 2: Navigaing and adding product to cart from detailview", async function () {
       await page.goto(config.baseUrl + "/babe-huulepulk-spf20-4g-pmm0100409ee", { waitUntil: 'networkidle0' });
       await page.waitAndClick("#product-addtocart-button");
       await page.waitForSelector(".counter-number");
@@ -76,7 +74,7 @@ describe("ADDING PRODUCTS TO CART FOR CUSTOMER", function () {
       await page.waitForSelector(".item-info .product-item-name");
       (0, _chai.expect)((await page.getText(".item-info .product-item-name"))).to.include("BABE");
     });
-    (0, _mochaSteps.step)("Step 2.3: Adding with link", async function () {
+    (0, _mochaSteps.step)("Step 3: Adding product to cart with link", async function () {
       await page.goto(config.baseUrl + "/products/link/add/pmm0100409ee", { waitUntil: 'networkidle0' });
       await homepage.navigation();
       (0, _chai.expect)((await page.getText(".subtotal"))).not.to.equal("0.00 €");

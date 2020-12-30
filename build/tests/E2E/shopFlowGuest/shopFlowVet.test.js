@@ -20,7 +20,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var constants = require("../../../lib/constants/constants");
 
-describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT", function () {
+describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT (shopFlowVet.test)", function () {
   var page = void 0;
   var homepage = void 0;
   var loginPage = void 0;
@@ -34,7 +34,7 @@ describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT", function () {
     await page.close();
   });
 
-  describe("E2E Shopflow buying VET products as guest", function () {
+  describe("1.E2E Shopflow buying VET products as guest", function () {
     (0, _mochaSteps.step)("Step 1: Adding from detailview on open times", async function () {
       await page.goto("https://www.staging.apotheka.ee/frontline-combo-cats-tapilahus-100mg-120mg-ml-0-5ml-n1-pmm0099719ee", { waitUntil: 'networkidle0' });
       await homepage.navigation();
@@ -65,7 +65,7 @@ describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT", function () {
       await page.waitForSelector("#checkout-root");
       (0, _chai.expect)((await page.url())).to.equal("https://www.staging.apotheka.ee/fast/checkout/index/");
     });
-    (0, _mochaSteps.step)("Step 2: React checkout choose shipping method and fill necessary fields", async function () {
+    (0, _mochaSteps.step)("Step 3: React checkout choose shipping method and fill necessary fields", async function () {
       // Choose Smartpost pakiautomaat
       await page.clickHelp("[class] li:nth-of-type(5) div span");
       //Get Order number
@@ -73,7 +73,7 @@ describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT", function () {
       //const orderNumber = await page.getText(".summary-title");
       //console.log("Order Nr. React: " + orderNumber);
       //Wait for dropdown and click on it
-      await page.clickHelp(".control-select-select");
+      await page.clickHelp(".control-select-addon");
       //Choose value
       await page.waitAndClick("body > div.bp3-portal > div > div > div > div > ul > li:nth-child(6) > a > div");
       //Wait for Continue button to be enabled
@@ -81,7 +81,7 @@ describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT", function () {
       //Click Continue
       await page.click(".button-inner .text");
     });
-    (0, _mochaSteps.step)("Step 3: React checkout fill short contact information", async function () {
+    (0, _mochaSteps.step)("Step 4: React checkout fill short contact information", async function () {
       //Email
       await page.waitAndType(".layout-form-column:nth-of-type(1) [type]", "lauri@upitech.ee");
       //Firstname
@@ -93,7 +93,7 @@ describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT", function () {
       //Click Continue
       await page.click("#checkout-root > div > div.frame-checkout-content > div > div > div > div > div.layout-sidebar-primary > ul > li.list-progress-item.current.ListProgressItem-item-0-2-5 > div.list-progress-item-content.ListProgressItem-content-0-2-4 > div > ul > li");
     });
-    (0, _mochaSteps.step)("Step 4: React checkout check T&C and choose payment method", async function () {
+    (0, _mochaSteps.step)("Step 5: React checkout check T&C and choose payment method", async function () {
       //Terms and conditions checkbox
       await page.waitAndClick(".checkbox-with-label-label > a");
       //Terms and conditions close
@@ -103,7 +103,7 @@ describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT", function () {
       //LHV Payment
       await page.waitAndClick("li:nth-of-type(10) > button > .banklinks-item-label");
     });
-    (0, _mochaSteps.step)("Step 5: Maksekeskuse test environment", async function () {
+    (0, _mochaSteps.step)("Step 6: Maksekeskuse test environment", async function () {
       //Wait for maksekeskus
 
       //Wait for maksekeskus confirmation
@@ -113,7 +113,7 @@ describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT", function () {
       await page.waitForSelector(".checkout-success");
     });
 
-    (0, _mochaSteps.step)("Step 6: Success page validation for Order Nr. and check for OrderXML", async function () {
+    (0, _mochaSteps.step)("Step 7: Success page validation for Order Nr. and check for OrderXML", async function () {
       var urlSuccess = await page.url();
       (0, _chai.expect)(urlSuccess).to.include("success");
       //Redirect back to Success page

@@ -8,7 +8,7 @@ import LoginPage from "../../../pages/LoginPage";
 const config = require("../../../lib/config");
 const { makeGetRequest } = require("../../../lib/helpers");
 
-describe("SHOP FLOW FOR GUEST BUYING DEFAULT PRODUCT", () => {
+describe("SHOP FLOW FOR GUEST BUYING DEFAULT PRODUCT (shopFlowDefault.test)", () => {
   let page;
   let homepage;
   let loginPage;
@@ -21,8 +21,8 @@ describe("SHOP FLOW FOR GUEST BUYING DEFAULT PRODUCT", () => {
   after(async () => {
     await page.close();
   });
-  describe("E2E Shopflow buying default products as guest", () => {
-    step("Step 1: Buying default product from listview", async () => {
+  describe("1.E2E Shopflow buying default products as guest", () => {
+    step("Step 1: Searching and buying default product from listview", async () => {
       const progressStock = await makeGetRequest(
         config.requestUrlProgress,
         config.productCodeApotheka

@@ -9,7 +9,7 @@ const config = require('../../../lib/config');
 
 let constants = require("../../../lib/constants/constants");
 
-describe("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT", () => {
+describe("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT (shopFlowDefaultCustomer.test)", () => {
   let page;
   let homepage;
   let loginPage;
@@ -19,8 +19,8 @@ describe("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT", () => {
     homepage = new HomePage(page);
     loginPage = new LoginPage(page);
     //Check if cutomer is deleted from Magento and ALPI
-    await loginPage.checkAndDeleteAlpi(config.alpiUsername,config.alpiPassword, config.personalCode);
-    await loginPage.checkAndDeleteMagento(config.magentoUsername,config.magentoPassword, config.name);
+    //await loginPage.checkAndDeleteAlpi(config.alpiUsername,config.alpiPassword, config.personalCode);
+    //await loginPage.checkAndDeleteMagento(config.magentoUsername,config.magentoPassword, config.name);
   });
   after(async () => {
     //Delete Customer from Magento
@@ -30,7 +30,7 @@ describe("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT", () => {
     //Close Browser
     await page.close();
   });
-  describe("E2E Shopflow buying default products for logged in customer", () => {
+  describe("1.E2E Shopflow buying default products for logged in customer", () => {
     step("Step 1: Making new Customer", async () => {
         await loginPage.newCustomer(config.personalCode,config.phoneNumber,config.email);
       });
@@ -90,7 +90,7 @@ describe("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT", () => {
           await page.waitAndClick("li:nth-of-type(10) > button > .banklinks-item-label");
         });
     
-    step("Step 6: Maksekeskuse test environment", async () => {
+    step("Step 6: Maksekeskus test environment", async () => {
       //Wait for maksekeskus confirmation
       await page.waitAndClick(".btn-success");
       await page.waitAndClick(".btn-success");

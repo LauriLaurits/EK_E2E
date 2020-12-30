@@ -7,7 +7,7 @@ import LoginPage from "../../../pages/LoginPage";
 
 let constants = require("../../../lib/constants/constants");
 
-describe("SHOP FLOW FOR GUEST BUYING OTC PRODUCT", () => {
+describe("SHOP FLOW FOR GUEST BUYING OTC PRODUCT (shopFlowOTC.test)", () => {
   let page;
   let homepage;
   let loginPage;
@@ -21,7 +21,7 @@ describe("SHOP FLOW FOR GUEST BUYING OTC PRODUCT", () => {
     await page.close();
   });
 
-  describe("E2E Shopflow buying OTC products as guest", () => {
+  describe("1.E2E Shopflow buying OTC products as guest", () => {
     step("Step 1: Adding OTC to Cart from detailview", async () => {
       await page.goto(
         "https://www.staging.apotheka.ee/smecta-suukaudse-susp-pulber-3g-n10-pmm0010809ee",{ waitUntil: 'networkidle0'});
@@ -48,7 +48,7 @@ describe("SHOP FLOW FOR GUEST BUYING OTC PRODUCT", () => {
     //const orderNumber = await page.getText(".summary-title");
     //console.log("Order Nr. React: " + orderNumber);
     //Wait for dropdown and click on it
-    await page.waitAndClick(".control-select-select");
+    await page.waitAndClick(".control-select-addon");
     //Choose value
     await page.waitAndClick("body > div.bp3-portal > div > div > div > div > ul > li:nth-child(6) > a > div");
     //Wait for Continue button to be enabled

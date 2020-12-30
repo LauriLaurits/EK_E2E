@@ -7,7 +7,7 @@ import LoginPage from "../../../pages/LoginPage";
 
 let constants = require("../../../lib/constants/constants");
 
-describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT", () => {
+describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT (shopFlowVet.test)", () => {
   let page;
   let homepage;
   let loginPage;
@@ -21,7 +21,7 @@ describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT", () => {
     await page.close();
   });
 
-  describe("E2E Shopflow buying VET products as guest", () => {
+  describe("1.E2E Shopflow buying VET products as guest", () => {
     step("Step 1: Adding from detailview on open times", async () => {
       await page.goto(
         "https://www.staging.apotheka.ee/frontline-combo-cats-tapilahus-100mg-120mg-ml-0-5ml-n1-pmm0099719ee",{ waitUntil: 'networkidle0'});
@@ -53,7 +53,7 @@ describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT", () => {
     await page.waitForSelector("#checkout-root");
     expect(await page.url()).to.equal("https://www.staging.apotheka.ee/fast/checkout/index/");
   });
-  step("Step 2: React checkout choose shipping method and fill necessary fields", async () => {
+  step("Step 3: React checkout choose shipping method and fill necessary fields", async () => {
     // Choose Smartpost pakiautomaat
     await page.clickHelp("[class] li:nth-of-type(5) div span");
     //Get Order number
@@ -61,7 +61,7 @@ describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT", () => {
     //const orderNumber = await page.getText(".summary-title");
     //console.log("Order Nr. React: " + orderNumber);
     //Wait for dropdown and click on it
-    await page.clickHelp(".control-select-select");
+    await page.clickHelp(".control-select-addon");
     //Choose value
     await page.waitAndClick("body > div.bp3-portal > div > div > div > div > ul > li:nth-child(6) > a > div");
     //Wait for Continue button to be enabled
@@ -69,7 +69,7 @@ describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT", () => {
     //Click Continue
     await page.click(".button-inner .text");
   });
-  step("Step 3: React checkout fill short contact information", async () => {
+  step("Step 4: React checkout fill short contact information", async () => {
     //Email
     await page.waitAndType(".layout-form-column:nth-of-type(1) [type]","lauri@upitech.ee");
     //Firstname
@@ -81,7 +81,7 @@ describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT", () => {
    //Click Continue
    await page.click("#checkout-root > div > div.frame-checkout-content > div > div > div > div > div.layout-sidebar-primary > ul > li.list-progress-item.current.ListProgressItem-item-0-2-5 > div.list-progress-item-content.ListProgressItem-content-0-2-4 > div > ul > li");
   });
-  step("Step 4: React checkout check T&C and choose payment method", async () => {
+  step("Step 5: React checkout check T&C and choose payment method", async () => {
     //Terms and conditions checkbox
     await page.waitAndClick(".checkbox-with-label-label > a");
     //Terms and conditions close
@@ -91,7 +91,7 @@ describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT", () => {
     //LHV Payment
     await page.waitAndClick("li:nth-of-type(10) > button > .banklinks-item-label");
   });
-  step("Step 5: Maksekeskuse test environment", async () => {
+  step("Step 6: Maksekeskuse test environment", async () => {
     //Wait for maksekeskus
 
     //Wait for maksekeskus confirmation
@@ -101,7 +101,7 @@ describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT", () => {
     await page.waitForSelector(".checkout-success");
   });
 
-  step("Step 6: Success page validation for Order Nr. and check for OrderXML", async () => {
+  step("Step 7: Success page validation for Order Nr. and check for OrderXML", async () => {
     const urlSuccess = await page.url();
     expect(urlSuccess).to.include("success");
     //Redirect back to Success page

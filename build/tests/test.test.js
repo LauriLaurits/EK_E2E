@@ -43,30 +43,47 @@ describe.skip("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST", function () {
   });
 
   describe("Test Describe  ", function () {
-    (0, _mochaSteps.step)("test postmann", async function () {
-      var data = await makeGetRequest(config.requestUrlProgress, config.productCodeApotheka);
-      console.log(data.data[0].in_stock);
+    (0, _mochaSteps.step)("Test newcustomer", async function () {
+      await loginPage.newCustomer(config.personalCode, config.phoneNumber, config.email);
+      await page.waitForSelector(".box-newsletter");
     });
-    (0, _mochaSteps.step)("Step 1.1: Adding from listview", async function () {
-      var progressStock = await makeGetRequest(config.requestUrlProgress, config.productCodeApotheka);
-      if (progressStock.data[0].in_stock >= 1) {
-        await page.goto(config.baseUrl, { waitUntil: "networkidle0" });
-        await homepage.navigation();
-        await page.waitAndClick("#search");
-        await page.waitAndType("#search", "P" + config.productCodeApotheka);
-        await page.keyboard.press("Enter");
-        await page.waitAndClick(".product-item:nth-of-type(1) .tocart");
-        await page.waitForSelector(".counter-number");
-        await homepage.navigation();
-        (0, _chai.expect)((await page.getText(".subtotal"))).not.to.equal("0.00 €");
-        await homepage.navigation();
-        await page.waitAndClick(".subtotal");
-        await page.waitForSelector(".item-info .product-item-name");
-        var productName = await makeGetRequest(config.requestUrlProgress, config.productCodeApotheka);
-        (0, _chai.expect)((await page.getText(".item-info .product-item-name"))).to.include(productName.data[0].name);
-      } else {
-        console.log("Product " + config.productCodeApotheka + " is out of stock");
-      }
-    });
+    /* step("test postmann", async () => {
+       const data = await makeGetRequest(
+         config.requestUrlProgress,
+         config.productCodeApotheka
+       );
+       console.log(data.data[0].in_stock);
+     });
+     step("Step 1.1: Adding from listview", async () => {
+       const progressStock = await makeGetRequest(
+         config.requestUrlProgress,
+         config.productCodeApotheka
+       );
+       if (progressStock.data[0].in_stock >= 1) {
+         await page.goto(config.baseUrl, { waitUntil: "networkidle0" });
+         await homepage.navigation();
+         await page.waitAndClick("#search");
+         await page.waitAndType("#search", "P" + config.productCodeApotheka);
+         await page.keyboard.press("Enter");
+         await page.waitAndClick(".product-item:nth-of-type(1) .tocart");
+         await page.waitForSelector(".counter-number");
+         await homepage.navigation();
+         expect(await page.getText(".subtotal")).not.to.equal("0.00 €");
+         await homepage.navigation();
+         await page.waitAndClick(".subtotal");
+         await page.waitForSelector(".item-info .product-item-name");
+         const productName = await makeGetRequest(
+           config.requestUrlProgress,
+           config.productCodeApotheka
+         );
+         expect(await page.getText(".item-info .product-item-name")).to.include(
+           productName.data[0].name
+         );
+       } else {
+         console.log(
+           "Product " + config.productCodeApotheka + " is out of stock"
+         );
+       }
+     }); */
   });
 });

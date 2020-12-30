@@ -23,7 +23,7 @@ var config = require("../../../lib/config");
 var _require = require("../../../lib/helpers"),
     makeGetRequest = _require.makeGetRequest;
 
-describe("SHOP FLOW FOR GUEST BUYING DEFAULT PRODUCT", function () {
+describe("SHOP FLOW FOR GUEST BUYING DEFAULT PRODUCT (shopFlowDefault.test)", function () {
   var page = void 0;
   var homepage = void 0;
   var loginPage = void 0;
@@ -36,8 +36,8 @@ describe("SHOP FLOW FOR GUEST BUYING DEFAULT PRODUCT", function () {
   after(async function () {
     await page.close();
   });
-  describe("E2E Shopflow buying default products as guest", function () {
-    (0, _mochaSteps.step)("Step 1: Buying default product from listview", async function () {
+  describe("1.E2E Shopflow buying default products as guest", function () {
+    (0, _mochaSteps.step)("Step 1: Searching and buying default product from listview", async function () {
       var progressStock = await makeGetRequest(config.requestUrlProgress, config.productCodeApotheka);
       if (progressStock.data[0].in_stock >= 1) {
         await page.goto(config.baseUrl, { waitUntil: "networkidle0" });

@@ -22,7 +22,7 @@ var config = require('../../../lib/config');
 
 var constants = require("../../../lib/constants/constants");
 
-describe("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT", function () {
+describe("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT (shopFlowDefaultCustomer.test)", function () {
   var page = void 0;
   var homepage = void 0;
   var loginPage = void 0;
@@ -32,8 +32,8 @@ describe("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT", function () 
     homepage = new _HomePage2.default(page);
     loginPage = new _LoginPage2.default(page);
     //Check if cutomer is deleted from Magento and ALPI
-    await loginPage.checkAndDeleteAlpi(config.alpiUsername, config.alpiPassword, config.personalCode);
-    await loginPage.checkAndDeleteMagento(config.magentoUsername, config.magentoPassword, config.name);
+    //await loginPage.checkAndDeleteAlpi(config.alpiUsername,config.alpiPassword, config.personalCode);
+    //await loginPage.checkAndDeleteMagento(config.magentoUsername,config.magentoPassword, config.name);
   });
   after(async function () {
     //Delete Customer from Magento
@@ -43,7 +43,7 @@ describe("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT", function () 
     //Close Browser
     await page.close();
   });
-  describe("E2E Shopflow buying default products for logged in customer", function () {
+  describe("1.E2E Shopflow buying default products for logged in customer", function () {
     (0, _mochaSteps.step)("Step 1: Making new Customer", async function () {
       await loginPage.newCustomer(config.personalCode, config.phoneNumber, config.email);
     });
@@ -103,7 +103,7 @@ describe("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT", function () 
       await page.waitAndClick("li:nth-of-type(10) > button > .banklinks-item-label");
     });
 
-    (0, _mochaSteps.step)("Step 6: Maksekeskuse test environment", async function () {
+    (0, _mochaSteps.step)("Step 6: Maksekeskus test environment", async function () {
       //Wait for maksekeskus confirmation
       await page.waitAndClick(".btn-success");
       await page.waitAndClick(".btn-success");

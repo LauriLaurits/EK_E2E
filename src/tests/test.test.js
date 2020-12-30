@@ -29,7 +29,11 @@ describe.skip("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST", () => {
   });
 
   describe("Test Describe  ", () => {
-    step("test postmann", async () => {
+    step("Test newcustomer", async () => {
+      await loginPage.newCustomer(config.personalCode,config.phoneNumber,config.email);
+      await page.waitForSelector(".box-newsletter");
+    });
+   /* step("test postmann", async () => {
       const data = await makeGetRequest(
         config.requestUrlProgress,
         config.productCodeApotheka
@@ -66,6 +70,6 @@ describe.skip("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST", () => {
           "Product " + config.productCodeApotheka + " is out of stock"
         );
       }
-    });
+    }); */
   });
 });

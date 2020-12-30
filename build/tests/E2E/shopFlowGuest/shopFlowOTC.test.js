@@ -20,7 +20,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var constants = require("../../../lib/constants/constants");
 
-describe("SHOP FLOW FOR GUEST BUYING OTC PRODUCT", function () {
+describe("SHOP FLOW FOR GUEST BUYING OTC PRODUCT (shopFlowOTC.test)", function () {
   var page = void 0;
   var homepage = void 0;
   var loginPage = void 0;
@@ -34,7 +34,7 @@ describe("SHOP FLOW FOR GUEST BUYING OTC PRODUCT", function () {
     await page.close();
   });
 
-  describe("E2E Shopflow buying OTC products as guest", function () {
+  describe("1.E2E Shopflow buying OTC products as guest", function () {
     (0, _mochaSteps.step)("Step 1: Adding OTC to Cart from detailview", async function () {
       await page.goto("https://www.staging.apotheka.ee/smecta-suukaudse-susp-pulber-3g-n10-pmm0010809ee", { waitUntil: 'networkidle0' });
       await homepage.navigation();
@@ -60,7 +60,7 @@ describe("SHOP FLOW FOR GUEST BUYING OTC PRODUCT", function () {
       //const orderNumber = await page.getText(".summary-title");
       //console.log("Order Nr. React: " + orderNumber);
       //Wait for dropdown and click on it
-      await page.waitAndClick(".control-select-select");
+      await page.waitAndClick(".control-select-addon");
       //Choose value
       await page.waitAndClick("body > div.bp3-portal > div > div > div > div > ul > li:nth-child(6) > a > div");
       //Wait for Continue button to be enabled

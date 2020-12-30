@@ -9,7 +9,7 @@ const config = require('../../../lib/config');
 
 //let constants = require("../../../lib/constants/constants");
 
-describe("ADDING PRODUCTS TO CART FOR CUSTOMER", () => {
+describe("ADDING PRODUCTS TO CART FOR CUSTOMER (addingProductsToCartCustomer.test)", () => {
   let page;
   let homepage;
   let loginPage;
@@ -19,10 +19,10 @@ describe("ADDING PRODUCTS TO CART FOR CUSTOMER", () => {
     homepage = new HomePage(page);
     loginPage = new LoginPage(page);
     //Check if cutomer is deleted from Magento and ALPI
-    await loginPage.checkAndDeleteAlpi(config.alpiUsername,config.alpiPassword, config.personalCode);
-    await loginPage.checkAndDeleteMagento(config.magentoUsername,config.magentoPassword, config.name);
+    //await loginPage.checkAndDeleteAlpi(config.alpiUsername,config.alpiPassword, config.personalCode);
+    //await loginPage.checkAndDeleteMagento(config.magentoUsername,config.magentoPassword, config.name);
     //Make new Customer
-    await loginPage.newCustomer(config.personalCode,config.phoneNumber,config.email);
+    //await loginPage.newCustomer(config.personalCode,config.phoneNumber,config.email);
   });
   afterEach(async () => {
     //Empty Cart
@@ -37,11 +37,9 @@ describe("ADDING PRODUCTS TO CART FOR CUSTOMER", () => {
    //Close Browser
    await page.close();
   });
-  describe("Adding DEFAULT Products for Customer", () => {
-        step("Step 2.1: Adding from listview", async () => {
-            //await loginPage.loginMobileID(config.baseUrl + "","37200000566");
-            //Make new Customer
-            //await loginPage.newCustomer(config.personalCode,config.phoneNumber,config.email);
+  describe("1.Adding DEFAULT Products for Customer", () => {
+        step("Step 1: Making new customer and adding product to cart from listview", async () => {
+            await loginPage.newCustomer(config.personalCode,config.phoneNumber,config.email);
             await page.goto(config.baseUrl + "/tooted/ilu/huulepulgad",{ waitUntil: 'networkidle0'});
             await homepage.navigation();
             await page.waitAndClick(".product-item:nth-of-type(1) .tocart");
@@ -52,7 +50,7 @@ describe("ADDING PRODUCTS TO CART FOR CUSTOMER", () => {
             await page.waitForSelector(".item-info .product-item-name");
             expect(await page.getText(".item-info .product-item-name")).to.include("BABE");
         });
-        step("Step 2.2: Adding from detailview", async () => {
+        step("Step 2: Navigaing and adding product to cart from detailview", async () => {
             await page.goto(config.baseUrl + "/babe-huulepulk-spf20-4g-pmm0100409ee",{ waitUntil: 'networkidle0'});
             await page.waitAndClick("#product-addtocart-button");
             await page.waitForSelector(".counter-number");
@@ -63,7 +61,7 @@ describe("ADDING PRODUCTS TO CART FOR CUSTOMER", () => {
             await page.waitForSelector(".item-info .product-item-name");
             expect(await page.getText(".item-info .product-item-name")).to.include("BABE");
         });
-        step("Step 2.3: Adding with link", async () => {
+        step("Step 3: Adding product to cart with link", async () => {
           await page.goto(config.baseUrl + "/products/link/add/pmm0100409ee",{ waitUntil: 'networkidle0'}); 
           await homepage.navigation();
           expect(await page.getText(".subtotal")).not.to.equal("0.00 €");

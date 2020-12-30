@@ -9,10 +9,10 @@ module.exports = {
     alpiPassword: 'TCG8UpAzw',
     alpiRequestUrl: 'https://testcard.apotheka.ee/data.php?passcode=56af870f72782959cb1767ce67e1b7d3&query=777|SCUSTOMERV2',
 //Mobile ID personalcode and phoneNumber for testing
-    personalCode: '60001018800',
-    phoneNumber: '00000566',
+    personalCode: '60001017716',
+    phoneNumber: '69100366',
     email: 'pimogam614@synevde.com',
-    name: 'MARY ÄNN O’CONNEŽ-ŠUSLIK TESTNUMBER',
+    name: 'ONE TESTNUMBER',
     personalCodeLogin: '60001019906',
     phoneNumberLogin: '00000766',
     emailLogin: 'gojinak632@x1post.com',

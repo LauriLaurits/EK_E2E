@@ -33,7 +33,8 @@ var LoginPage = function () {
       await this.page.waitAndType("div#login-mobile-id > .fieldset input[name='personalcode']", personalCode);
       await this.page.waitAndClick("#mobile-id-input");
       await this.page.waitAndType("#mobile-id-input", phoneNumber);
-      await this.page.click("#mobileid-submit");
+      await this.page.waitFor(1000);
+      await this.page.waitAndClick("#mobileid-submit");
       await this.page.isElementVisible("#mobileid-verification");
       (0, _chai.expect)((await this.page.isElementVisible("#mobileid-verification"))).to.be.true;
       await this.page.waitForSelector(".create.fieldset.info");
@@ -79,7 +80,7 @@ var LoginPage = function () {
 
   }, {
     key: "getAlpiID",
-    value: async function getAlpiID(userName, passWord) {
+    value: async function getAlpiID(userName, passWord, name) {
       await this.page.goto(config.backendUrl, { waitUntil: "networkidle0" });
       await this.page.waitAndClick("#username");
       await this.page.waitAndType("#username", userName);
@@ -95,7 +96,7 @@ var LoginPage = function () {
       await this.page.goto(config.backendUrl + "/customer/index/edit/id/" + getCustomerID);
       await this.page.waitForSelector(".admin__page-nav");
       var getCustomerName = await this.page.getText("h1.page-title");
-      (0, _chai.expect)(getCustomerName).to.include("MARY ÄNN O’CONNEŽ-ŠUSLIK TESTNUMBER");
+      (0, _chai.expect)(getCustomerName).to.include(name);
       await this.page.clickHelp("#tab_block_customer_alpi_tab_view");
       await this.page.waitForSelector("[for='alpi_id'] span");
       var alpi = await this.page.$("#alpi_id");
@@ -192,6 +193,15 @@ var LoginPage = function () {
       await this.page.clickHelp(".signout");
       await this.page.waitForSelector(".customer-account-logoutsuccess");
     }
+    //Logout Magento Back
+
+  }, {
+    key: "logOutBackend",
+    value: async function logOutBackend() {
+      await this.page.waitAndClick(".admin-user-account-text");
+      await this.page.waitAndClick(".account-signout");
+      await this.page.waitForSelector(".message.message-success.success > div");
+    }
     //Login to Alpi check PersonalID and delete if you got a match
 
   }, {
@@ -211,13 +221,11 @@ var LoginPage = function () {
       await this.page.waitAndClick("input[value='Otsi']");
       var client = await this.page.isElementVisible(".dropCard");
       if (client) {
-        console.log("Test1 " + client);
         await this.page.waitAndClick(".dropCard");
         await this.page.waitForSelector(".ui-dialog-buttonset");
         await this.page.keyboard.press("Enter");
         await this.page.keyboard.press("Enter");
       } else {
-        console.log("Test" + client);
         (0, _chai.expect)(client).to.be.false;
       }
     }
@@ -229,10 +237,16 @@ var LoginPage = function () {
       await this.page.waitAndType("#username", userName);
       await this.page.waitAndClick("#login");
       await this.page.waitAndType("#login", passWord);
-      var popup = await this.page.isElementVisible(".action-primary");
+      await this.page.waitAndClick(".action-primary");
+      //console.log("Poup1" + popup);
+      await this.page.waitFor(2000);
+      var popup = await this.page.isElementVisible(".warning");
+      //console.log("Poup" + popup);
       if (popup) {
+        //await this.page.clickHelp("[aria-labelledby] [data-role='closeBtn']");
         await this.page.waitAndClick(".action-primary");
         await this.page.waitAndClick(".action-close");
+        //await this.page.waitAndClick(".action-close");
       }
       var customerDetailsUrl = await this.page.getHref(".item-customer-manage.level-1 a");
       await this.page.goto(customerDetailsUrl[0], { waitUntil: "networkidle0" });
@@ -265,19 +279,23 @@ var LoginPage = function () {
         var deleteMessage = await this.page.getText(".message.message-success.success");
         (0, _chai.expect)(deleteMessage).to.include("You deleted the customer.");
       }
-      await this.page.waitFor(4000);
+      //await this.page.waitFor(4000);
     }
   }, {
     key: "checkAndDeleteMagentoLoggedIn",
     value: async function checkAndDeleteMagentoLoggedIn(name) {
+      console.log(config.backendUrl);
       await this.page.goto(config.backendUrl, { waitUntil: "networkidle0" });
+      console.log("Backend URL " + this.page.url());
       var popup = await this.page.isElementVisible(".action-primary");
       if (popup) {
         await this.page.waitAndClick(".action-primary");
         await this.page.waitAndClick(".action-close");
       }
       var customerDetailsUrl = await this.page.getHref(".item-customer-manage.level-1 a");
+      console.log("Details URL " + this.page.url());
       await this.page.goto(customerDetailsUrl[0], { waitUntil: "networkidle0" });
+      console.log("Details URL after " + this.page.url());
       var removeFilter = await this.page.isElementVisible(".action-remove");
       if (removeFilter) {
         await this.page.waitAndClick(".action-remove");
