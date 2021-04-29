@@ -125,4 +125,10 @@ export default class Builder {
     await this.page.waitForFunction(document.getElementById(selector).value != value);
     return true;
   }
+  async detectUrl(message) {
+    const urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
+    //const response = JSON.parse(JSON.stringify(message));
+    return message.match(urlRegex);
+    //return ;
+  }
 }

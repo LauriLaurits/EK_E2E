@@ -5,10 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "node ./node_modules/mocha/bin/mocha --timeout=43000 --require mocha-steps ./build/tests/**.js",
-    "test:e2e":"node ./node_modules/mocha/bin/mocha --timeout=43000 --require mocha-steps ./build/tests/e2e/**",
-    "test:e2e:customer":"node ./node_modules/mocha/bin/mocha --timeout=43000 --require mocha-steps ./build/tests/e2e/shopFlowCustomer/**.test.js",
-    "test:e2e:guest":"node ./node_modules/mocha/bin/mocha --timeout=43000 --require mocha-steps ./build/tests/e2e/shopFlowGuest/**.test.js",
-    "test:all":"node ./node_modules/mocha/bin/mocha --timeout=43000 --require mocha-steps ./build/tests/**/**.test.js",
+    "test:e2e": "node ./node_modules/mocha/bin/mocha --timeout=43000 --require mocha-steps ./build/tests/e2e/**",
+    "test:e2e:customer": "node ./node_modules/mocha/bin/mocha --timeout=43000 --require mocha-steps ./build/tests/e2e/shopFlowCustomer/**.test.js",
+    "test:e2e:guest": "node ./node_modules/mocha/bin/mocha --timeout=43000 --require mocha-steps ./build/tests/e2e/shopFlowGuest/**.test.js",
+    "test:subscribe": "node ./node_modules/mocha/bin/mocha --timeout=43000 --require mocha-steps ./build/tests/subscribe/**",
+    "test:all": "node ./node_modules/mocha/bin/mocha --timeout=43000 --require mocha-steps ./build/tests/**/**.test.js",
+    "test-snapshots": "jest --config=jest.config.js --detectOpenHandles --forceExit",
+    "test-snapshots-update": "jest --config=jest.config.js --updateSnapshot --detectOpenHandles --forceExit",
     "clean": "rm -rf build",
     "build": "babel --preset es2015 -d build/ src/"
   },
@@ -21,17 +24,20 @@
   "author": "LauriL",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "chai": "^4.2.0",
-    "jest": "^26.1.0",
+    "jest": "^26.6.3",
+    "jest-image-snapshot": "^4.3.0",
     "mocha": "^8.1.3",
     "mocha-steps": "^1.3.0",
-    "puppeteer": "^4.0.1"
+    "prettier": "^2.2.1",
+    "puppeteer": "^4.0.1",
+    "puppeteer-email": "^0.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.11.0",
     "@babel/preset-env": "^7.11.0",
-    "babel-cli": "^6.26.0",
+    "babel-cli": "^6.18.0",
     "babel-preset-es2015": "^6.24.1"
   }
 }

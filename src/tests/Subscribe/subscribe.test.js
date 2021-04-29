@@ -1,16 +1,16 @@
 import { step } from "mocha-steps";
 import { expect } from "chai";
 
-import Page from "../lib/builder";
-import HomePage from "../pages/HomePage";
-import LoginPage from "../pages/LoginPage";
+import Page from "../../lib/builder";
+import HomePage from "../../pages/HomePage";
+import LoginPage from "../../pages/LoginPage";
 
-const config = require('../lib/config');
+const config = require('../../lib/config');
 
-let constants = require("../lib/constants/constants");
-let alpi = require("../lib/constants/alpiConst");
+let constants = require("../../lib/constants/constants");
+let alpi = require("../../lib/constants/alpiConst");
 
-const { makePostRequest } = require('../lib/helpers');
+const { makePostRequest } = require('../../lib/helpers');
 
 describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST (subscribe.test)", () => {
   let page;
@@ -21,6 +21,9 @@ describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST (subscribe.test)", () => {
     page = await Page.build("Desktop");
     homepage = new HomePage(page);
     loginPage = new LoginPage(page);
+    await loginPage.checkAndDeleteMagento(config.magentoUsername,config.magentoPassword, config.name);
+    await loginPage.logOutBackend();
+    await loginPage.checkAndDeleteAlpi(config.alpiUsername,config.alpiPassword, config.personalCode);
   });
   
   after(async () => {
@@ -35,7 +38,7 @@ describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST (subscribe.test)", () => {
   describe("1.Create New Customer and test subscription links  ", () => {
       step("Step 1: Create new customer and test if he/she has subscription ", async () => {
           //Make New Customer
-          await loginPage.newCustomer(config.personalCode,config.phoneNumber,config.email);
+          await loginPage.newCustomerConfirmation(config.personalCode,config.phoneNumber,config.email);
           await page.waitForSelector(".box-newsletter");
           await page.goto(config.baseUrl + "/newsletter/manage/");
           await page.waitForSelector("#form-validate");
@@ -66,7 +69,7 @@ describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST (subscribe.test)", () => {
           expect(request.subscriptions_newsletter[2].subscription).equal('1');
           });
     });
-  describe("4.Create New Customer and test SaS unsubscribe links  ", () => {
+  describe("3.Create New Customer and test SaS unsubscribe links  ", () => {
        step("Step 1: Get ALPI ID, construct unsubscribe link and click on unsubscribe", async () => {
           //Get ALPI id for last generated Customer
         const alpiID = await loginPage.getAlpiID(config.magentoUsername, config.magentoPassword, config.name);
@@ -85,9 +88,11 @@ describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST (subscribe.test)", () => {
         //Go to ApothekaBeauty SaS unsubscribe link and click unsubscribe
         await page.goto(unsubscribeApothekaBeauty);
         await page.waitForSelector(".layout-unsubscribe.ng-scope");
-        await page.waitAndClick(".btn.ng-binding.primary");
+        await page.waitAndClickTwo(".btn.ng-binding.primary");
         // Go to unsubscribe page
-        await page.goto(config.baseUrl + "/newsletter/manage/");
+        await page.goto(config.baseUrl + "/customer/account/");
+        await page.waitAndClick(".box-newsletter .box-actions span");
+        await page.waitForSelector("#form-validate .choice:nth-child(4) span");
         //Get subscription values
         const subscriptionApotheka = await loginPage.getSubscriptionValue("/html//input[@id='subscription[ApothekaEE]']");
         const subscriptionPetcity = await loginPage.getSubscriptionValue("/html//input[@id='subscription[PetCityEE]']");
@@ -95,10 +100,10 @@ describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST (subscribe.test)", () => {
         //Expect subscriptions to be false
         expect(subscriptionApotheka).to.be.false;
         expect(subscriptionPetcity).to.be.false;
-        expect(subscriptionApothekaBeauty).to.be.false;
+        expect(subscriptionApothekaBeauty).to.be.false; 
       });
     });
-    describe("5.Check subscriptions after Unsubscribe from Alpi API", () => {
+    describe("4.Check subscriptions after Unsubscribe from Alpi API", () => {
        //Make Alpi API requests and check subscriptions
       step('Step 1: Check apotheka subscription ', async () => {
           const request = await makePostRequest(config.alpiRequestUrl, config.personalCode);
@@ -116,17 +121,15 @@ describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST (subscribe.test)", () => {
           expect(request.subscriptions_newsletter[2].subscription).equal('0');
           });
     });
-    describe("6.Add subscriptions back to user and check", () => {
+    describe("5.Add subscriptions back to user and check", () => {
       step("Step 1: Navigate back to subscripton page and add subscriptions", async () => {
-        const subscriptionApotheka = await loginPage.getSubscriptionValue("/html//input[@id='subscription[ApothekaEE]']");
-        console.log("Subs Apo before " + subscriptionApotheka);
         await page.goto(config.baseUrl + "/newsletter/manage/");
         await page.waitForSelector(".save");
         await page.waitAndClick("#form-validate .choice:nth-child(4) span");
         await page.waitAndClick("#form-validate .choice:nth-child(5) span");
         await page.waitAndClick("#form-validate .choice:nth-child(6) span");
         await page.waitAndClick(".save");
-        await page.waitForSelector("[data-bind='html\: message\.text']");
+        await page.waitForSelector("[data-bind='html\: \$parent\.prepareMessageForHtml\(message\.text\)']");
       });
       step("Step 2: Check if values have changed", async () => {
           await page.goto(config.baseUrl + "/newsletter/manage/");
@@ -134,7 +137,6 @@ describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST (subscribe.test)", () => {
           const subscriptionApotheka = await loginPage.getSubscriptionValue("/html//input[@id='subscription[ApothekaEE]']");
           const subscriptionPetcity = await loginPage.getSubscriptionValue("/html//input[@id='subscription[PetCityEE]']");
           const subscriptionApothekaBeauty = await loginPage.getSubscriptionValue("/html//input[@id='subscription[BeautyEE]']");
-          console.log("Subs Apo " + subscriptionApotheka);
           expect(subscriptionApotheka).to.be.true;
           expect(subscriptionPetcity).to.be.true;
           expect(subscriptionApothekaBeauty).to.be.true;

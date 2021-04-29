@@ -37,15 +37,19 @@ describe("SHOP FLOW FOR GUEST BUYING DEFAULT PRODUCT (shopFlowDefault.test)", fu
     await page.close();
   });
   describe("1.E2E Shopflow buying default products as guest", function () {
-    (0, _mochaSteps.step)("Step 1: Searching and buying default product from listview", async function () {
+    (0, _mochaSteps.step)("Step 1: Searching and buying default product from detailview", async function () {
       var progressStock = await makeGetRequest(config.requestUrlProgress, config.productCodeApotheka);
       if (progressStock.data[0].in_stock >= 1) {
         await page.goto(config.baseUrl, { waitUntil: "networkidle0" });
         await homepage.navigation();
+        await loginPage.closeCookie();
+        await homepage.navigation();
         await page.waitAndClick("#search");
         await page.waitAndType("#search", "P" + config.productCodeApotheka);
         await page.keyboard.press("Enter");
-        await page.waitAndClick("form[method='post'] > button[title='Lisa ostukorvi']");
+        await page.waitAndClick(".product-item-link");
+        await page.reload({ waitUntil: "networkidle0" });
+        await page.waitAndClick("#product-addtocart-button");
         await page.waitForSelector(".item-cart-count");
         await page.waitForSelector(".counter-number");
         await homepage.navigation();
@@ -64,7 +68,7 @@ describe("SHOP FLOW FOR GUEST BUYING DEFAULT PRODUCT (shopFlowDefault.test)", fu
     });
     (0, _mochaSteps.step)("Step 2: React checkout choose shipping method and fill necessary fields", async function () {
       //Choose shipping method
-      await page.waitAndClick("[class] li:nth-of-type(4) div span");
+      await page.waitAndClick("[class] li:nth-of-type(1) a");
       //Get Order number
       await page.waitForSelector(".summary-title");
       //const orderNumber = await page.getText(".summary-title");
@@ -109,7 +113,7 @@ describe("SHOP FLOW FOR GUEST BUYING DEFAULT PRODUCT (shopFlowDefault.test)", fu
       //Terms and conditions close
       await page.waitAndClick(".overlay-focusview-scroller .text");
       //LHV Payment
-      await page.waitAndClick("li:nth-of-type(10) > button > .banklinks-item-label");
+      await page.waitAndClick("li:nth-of-type(14) > button > .banklinks-item-image");
     });
 
     (0, _mochaSteps.step)("Step 5: Maksekeskuse test environment", async function () {

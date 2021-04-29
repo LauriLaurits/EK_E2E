@@ -32,7 +32,8 @@ describe("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT (shopFlowDefau
   });
   describe("1.E2E Shopflow buying default products for logged in customer", () => {
     step("Step 1: Making new Customer", async () => {
-        await loginPage.newCustomer(config.personalCode,config.phoneNumber,config.email);
+        //await loginPage.newCustomer(config.personalCode,config.phoneNumber,config.email);
+        await loginPage.newCustomerConfirmation(config.personalCode,config.phoneNumber,config.email);
       });
     step("Step 2: Adding default product with link to cart ", async () => {
       await page.goto(config.baseUrl + "/products/link/add/pmm0100409ee",{ waitUntil: "networkidle0" });
@@ -48,7 +49,7 @@ describe("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT (shopFlowDefau
 
     step("Step 3: React checkout choose shipping method and fill necessary fields",async () => {
           //Choose shipping method
-          await page.waitAndClick("[class] li:nth-of-type(4) div span");
+          await page.waitAndClick("[class] li:nth-of-type(1) div span");
           //Get Order number
           await page.waitForSelector(".summary-title");
           //const orderNumber = await page.getText(".summary-title");
@@ -87,7 +88,7 @@ describe("SHOP FLOW FOR LOGGED IN CUSTOMER BUYING DEFAULT PRODUCT (shopFlowDefau
           //Terms and conditions close
           await page.waitAndClick(".overlay-focusview-scroller .text");
           //LHV Payment
-          await page.waitAndClick("li:nth-of-type(10) > button > .banklinks-item-label");
+          await page.waitAndClick("li:nth-of-type(14) > button > .banklinks-item-label");
         });
     
     step("Step 6: Maksekeskus test environment", async () => {

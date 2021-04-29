@@ -48,6 +48,8 @@ describe.skip("ADDING PRODUCTS TO CART FOR GUEST (addingProductsToCart.test)", f
     (0, _mochaSteps.step)("Step 1: Adding from listview", async function () {
       await page.goto("https://www.staging.apotheka.ee/tooted/ilu/huulepulgad", { waitUntil: 'networkidle0' });
       await homepage.navigation();
+      await loginPage.closeCookie();
+      await homepage.navigation();
       await page.waitAndClick(".product-item:nth-of-type(1) .tocart");
       await page.waitForSelector(".counter-number");
       await homepage.navigation();

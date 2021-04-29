@@ -1,6 +1,8 @@
 import { expect } from "chai";
 
 const config = require('../lib/config');
+const { createEmail } = require('../lib/helpers');
+
 
 
 export default class LoginPage {
@@ -10,7 +12,13 @@ export default class LoginPage {
   //TODO if newcustomer is already customer how to continue
   async newCustomer(personalCode, phoneNumber, email) {
     await this.page.goto(config.baseUrl);
-    await this.page.waitAndClick("#registration_link");
+    //Wait and close cookie modal
+    await this.page.isElementVisible(".cookie-actions");
+    await this.page.waitForSelector(".cookie-actions");
+    await this.page.waitAndClick(".actions01.vertical .btn.primary");
+    expect(await this.page.isElementVisible(".cookie-settings")).to.be.false;
+    await this.page.waitForSelector("#registration_link");
+    await this.page.clickHelp("#registration_link");
     await this.page.waitForSelector("#horizontal_tabs");
     await this.page.waitAndClick("div#login-mobile-id > .fieldset input[name='personalcode']");
     await this.page.waitAndType("div#login-mobile-id > .fieldset input[name='personalcode']", personalCode);
@@ -31,23 +39,43 @@ export default class LoginPage {
     );
     await this.page.waitAndClick("#terms");
     await this.page.waitAndClick("#is_subscribed");
-    await this.page.waitAndClick("#submit");
-    await this.page.waitForSelector(".authorization-link.logged-in");
+    await this.page.waitAndClick("button#submit");
+    await this.page.waitForSelector("#form-validate");
   }
   //Login with Mobile ID TODO add PersonalCode
   async loginMobileID(personalCode, phoneNumber) {
     await this.page.goto(config.baseUrl);
-    await this.page.waitAndClick("#registration_link");
-    await this.page.waitForSelector("#horizontal_tabs");
-    await this.page.waitAndClick("div#mobileid-login > .fieldset input[name='personalcode']");
-    await this.page.waitAndType("div#mobileid-login > .fieldset input[name='personalcode']", personalCode);
-    await this.page.waitAndClick("#mobile-id-input");
-    await this.page.waitAndType("#mobile-id-input", phoneNumber);
-    await this.page.click("#mobileid-submit");
-    await this.page.isElementVisible("#mobileid-verification");
-    expect(await this.page.isElementVisible("#mobileid-verification")).to.be
-      .true;
-    await this.page.waitForSelector(".authorization-link.logged-in");
+    const cookies = await this.page.isElementVisible(".cookie-actions");
+    if(cookies) {
+        await this.page.waitForSelector(".cookie-actions");
+        await this.page.waitAndClick(".actions01.vertical .btn.primary");
+        expect(await this.page.isElementVisible(".cookie-settings")).to.be.false;
+        await this.page.clickHelp("#registration_link");
+        await this.page.waitForSelector("#horizontal_tabs");
+        await this.page.waitAndClick("div#login-mobile-id > .fieldset input[name='personalcode']");
+        await this.page.waitAndType("div#login-mobile-id > .fieldset input[name='personalcode']", personalCode);
+        await this.page.waitAndClick("#mobile-id-input");
+        await this.page.waitAndType("#mobile-id-input", phoneNumber);
+        await this.page.waitFor(1000);
+        await this.page.waitAndClick("#mobileid-submit");
+        await this.page.isElementVisible("#mobileid-verification");
+        expect(await this.page.isElementVisible("#mobileid-verification")).to.be
+          .true;
+        await this.page.waitForSelector(".authorization-link.logged-in");
+    } else {
+      await this.page.clickHelp("#registration_link");
+      await this.page.waitForSelector("#horizontal_tabs");
+      await this.page.waitAndClick("div#login-mobile-id > .fieldset input[name='personalcode']");
+      await this.page.waitAndType("div#login-mobile-id > .fieldset input[name='personalcode']", personalCode);
+      await this.page.waitAndClick("#mobile-id-input");
+      await this.page.waitAndType("#mobile-id-input", phoneNumber);
+      await this.page.waitFor(1000);
+      await this.page.waitAndClick("#mobileid-submit");
+      await this.page.isElementVisible("#mobileid-verification");
+      expect(await this.page.isElementVisible("#mobileid-verification")).to.be
+        .true;
+      await this.page.waitForSelector(".authorization-link.logged-in");
+    }
   }
   async loginSmartID(smartId) {
     await this.page.goto(config.baseUrl);
@@ -62,6 +90,7 @@ export default class LoginPage {
   //get alpi id when you are logged out
   async getAlpiID(userName, passWord, name) {
     await this.page.goto(config.backendUrl, { waitUntil: "networkidle0" });
+
     await this.page.waitAndClick("#username");
     await this.page.waitAndType("#username", userName);
     await this.page.waitAndClick("#login");
@@ -206,8 +235,12 @@ export default class LoginPage {
       await this.page.waitForSelector(".ui-dialog-buttonset");
       await this.page.keyboard.press("Enter");
       await this.page.keyboard.press("Enter");
+      await this.page.waitAndClick("a[title='Logi välja'] > span");
+      await this.page.waitForSelector("input[name='user']");
     } else {
       expect(client).to.be.false;
+      await this.page.waitAndClick("a[title='Logi välja'] > span");
+      await this.page.waitForSelector("input[name='user']");
     }
   }
   async checkAndDeleteMagento(userName, passWord, name) {
@@ -270,9 +303,7 @@ export default class LoginPage {
     //await this.page.waitFor(4000);
   }
   async checkAndDeleteMagentoLoggedIn(name) {
-    console.log(config.backendUrl);
     await this.page.goto(config.backendUrl, { waitUntil: "networkidle0" });
-    console.log("Backend URL " + this.page.url());
     const popup = await this.page.isElementVisible(".action-primary");
     if(popup) {
       await this.page.waitAndClick(".action-primary");
@@ -281,9 +312,7 @@ export default class LoginPage {
     const customerDetailsUrl = await this.page.getHref(
       ".item-customer-manage.level-1 a"
     );
-    console.log("Details URL " + this.page.url());
     await this.page.goto(customerDetailsUrl[0],  { waitUntil: "networkidle0" });
-    console.log("Details URL after " + this.page.url());
     const removeFilter = await this.page.isElementVisible(".action-remove");
     if(removeFilter) {
       await this.page.waitAndClick(".action-remove");
@@ -320,5 +349,68 @@ export default class LoginPage {
       );
       expect(deleteMessage).to.include("You deleted the customer.");
     }
+
+  }
+  async newCustomerConfirmation(personalCode, phoneNumber, email) {
+    await this.page.goto(config.baseUrl);
+    //Wait and close cookie modal
+    await this.page.isElementVisible(".cookie-actions");
+    await this.page.waitForSelector(".cookie-actions");
+    await this.page.waitAndClick(".actions01.vertical .btn.primary");
+    expect(await this.page.isElementVisible(".cookie-settings")).to.be.false;
+    await this.page.waitForSelector("#registration_link");
+    await this.page.clickHelp("#registration_link");
+    await this.page.waitForSelector("#horizontal_tabs");
+    await this.page.waitAndClick("div#login-mobile-id > .fieldset input[name='personalcode']");
+    await this.page.waitAndType("div#login-mobile-id > .fieldset input[name='personalcode']", personalCode);
+    await this.page.waitAndClick("#mobile-id-input");
+    await this.page.waitAndType("#mobile-id-input", phoneNumber);
+    await this.page.waitFor(500);
+    await this.page.waitAndClick("#mobileid-submit");
+    await this.page.isElementVisible("#mobileid-verification");
+    expect(await this.page.isElementVisible("#mobileid-verification")).to.be
+      .true;
+    await this.page.waitForSelector(".create.fieldset.info");
+    await this.page.waitAndClick("#email_address");
+    await this.page.waitAndType("#email_address", email);
+    await this.page.waitAndClick(".create.fieldset.info input#telephone");
+    await this.page.waitAndType(
+      ".create.fieldset.info input#telephone",
+      phoneNumber
+    );
+    await this.page.waitAndClick("#terms");
+    await this.page.waitAndClick("#is_subscribed");
+    await this.page.waitForSelector("#submit");
+    await this.page.waitFor(500);
+    await this.page.waitAndClickTwo("button#submit");
+    await this.page.waitForSelector(".action.primary.send");
+    const confirmationResponse =  await createEmail();
+    const confirmationLink = await this.page.detectUrl(confirmationResponse);
+    const cofirmLink = confirmationLink[2].slice(0,-1);
+    //console.log("Link " + cofirmLink);
+    await this.page.goto(cofirmLink);
+    //await this.page.isElementVisible(".cookie-actions");
+    //await this.page.waitForSelector(".cookie-actions");
+    //await this.page.waitAndClick(".actions01.vertical .btn.primary");
+    //expect(await this.page.isElementVisible(".cookie-settings")).to.be.false;
+    expect(await this.page.isElementVisible(".message-success.success.message")).to.be.true;
+    await this.page.waitAndClick("div#login-mobile-id > .fieldset input[name='personalcode']");
+    await this.page.waitAndType("div#login-mobile-id > .fieldset input[name='personalcode']", personalCode);
+    await this.page.waitAndClick("#mobile-id-input");
+    await this.page.waitAndType("#mobile-id-input", phoneNumber);
+    await this.page.waitFor(500);
+    await this.page.waitAndClick("#mobileid-submit");
+    await this.page.isElementVisible("#mobileid-verification");
+    expect(await this.page.isElementVisible("#mobileid-verification")).to.be
+        .true;
+    await this.page.waitForSelector(".authorization-link.logged-in");
+    //await this.page.waitFor(4000);
+  }
+  async closeCookie() {
+    await this.page.isElementVisible(".cookie-actions");
+    await this.page.waitForSelector(".cookie-actions");
+    await this.page.waitAndClick(".actions01.vertical .btn.primary");
+    expect(await this.page.isElementVisible(".cookie-settings")).to.be.false;
+    await this.page.waitFor(1000);
   }
 }

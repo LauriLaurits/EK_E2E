@@ -39,18 +39,18 @@ describe("ADDING PRODUCTS TO CART FOR CUSTOMER (addingProductsToCartCustomer.tes
   });
   describe("1.Adding DEFAULT Products for Customer", () => {
         step("Step 1: Making new customer and adding product to cart from listview", async () => {
-            await loginPage.newCustomer(config.personalCode,config.phoneNumber,config.email);
-            await page.goto(config.baseUrl + "/tooted/ilu/huulepulgad",{ waitUntil: 'networkidle0'});
+            await loginPage.newCustomerConfirmation(config.personalCode,config.phoneNumber,config.email);
+            await page.goto(config.baseUrl + "/tooted?brand=AVENE",{ waitUntil: 'networkidle0'});
             await homepage.navigation();
-            await page.waitAndClick(".product-item:nth-of-type(1) .tocart");
+            await page.waitAndClick(".product-item:nth-of-type(2) .actions-primary span");
             await page.waitForSelector(".counter-number");
             expect(await page.getText(".subtotal")).not.to.equal("0.00 €");
             await homepage.navigation();
             await page.waitAndClick(".subtotal");
             await page.waitForSelector(".item-info .product-item-name");
-            expect(await page.getText(".item-info .product-item-name")).to.include("BABE");
+            expect(await page.getText(".item-info .product-item-name")).to.include("AVENE");
         });
-        step("Step 2: Navigaing and adding product to cart from detailview", async () => {
+        step("Step 2: Navigating and adding product to cart from detailview", async () => {
             await page.goto(config.baseUrl + "/babe-huulepulk-spf20-4g-pmm0100409ee",{ waitUntil: 'networkidle0'});
             await page.waitAndClick("#product-addtocart-button");
             await page.waitForSelector(".counter-number");

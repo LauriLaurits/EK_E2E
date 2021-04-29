@@ -25,6 +25,7 @@ describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT (shopFlowVet.test)", () => {
     step("Step 1: Adding from detailview on open times", async () => {
       await page.goto(
         "https://www.staging.apotheka.ee/frontline-combo-cats-tapilahus-100mg-120mg-ml-0-5ml-n1-pmm0099719ee",{ waitUntil: 'networkidle0'});
+      await loginPage.closeCookie();
       await homepage.navigation();
       await page.waitAndClick(".btn-addtocart");
       await page.waitForSelector("#verify-vet");
@@ -55,7 +56,7 @@ describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT (shopFlowVet.test)", () => {
   });
   step("Step 3: React checkout choose shipping method and fill necessary fields", async () => {
     // Choose Smartpost pakiautomaat
-    await page.clickHelp("[class] li:nth-of-type(5) div span");
+    await page.clickHelp("[class] li:nth-of-type(2) a");
     //Get Order number
     await page.waitForSelector(".summary-title");
     //const orderNumber = await page.getText(".summary-title");
@@ -87,9 +88,9 @@ describe("SHOP FLOW FOR GUEST BUYING VET PRODUCT (shopFlowVet.test)", () => {
     //Terms and conditions close
     await page.waitAndClick(".overlay-focusview-scroller .text");
     //Councelling Yes
-    await page.waitAndClick(".radio-with-label-label");
+    await page.waitAndClick("[class] .radio-with-label:nth-of-type(1) .radio-with-label-label");
     //LHV Payment
-    await page.waitAndClick("li:nth-of-type(10) > button > .banklinks-item-label");
+    await page.waitAndClick("li:nth-of-type(14) > button > .banklinks-item-image");
   });
   step("Step 6: Maksekeskuse test environment", async () => {
     //Wait for maksekeskus

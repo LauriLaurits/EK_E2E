@@ -4,26 +4,26 @@ var _mochaSteps = require("mocha-steps");
 
 var _chai = require("chai");
 
-var _builder = require("../lib/builder");
+var _builder = require("../../lib/builder");
 
 var _builder2 = _interopRequireDefault(_builder);
 
-var _HomePage = require("../pages/HomePage");
+var _HomePage = require("../../pages/HomePage");
 
 var _HomePage2 = _interopRequireDefault(_HomePage);
 
-var _LoginPage = require("../pages/LoginPage");
+var _LoginPage = require("../../pages/LoginPage");
 
 var _LoginPage2 = _interopRequireDefault(_LoginPage);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var config = require('../lib/config');
+var config = require('../../lib/config');
 
-var constants = require("../lib/constants/constants");
-var alpi = require("../lib/constants/alpiConst");
+var constants = require("../../lib/constants/constants");
+var alpi = require("../../lib/constants/alpiConst");
 
-var _require = require('../lib/helpers'),
+var _require = require('../../lib/helpers'),
     makePostRequest = _require.makePostRequest;
 
 describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST (subscribe.test)", function () {
@@ -35,6 +35,9 @@ describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST (subscribe.test)", function () {
     page = await _builder2.default.build("Desktop");
     homepage = new _HomePage2.default(page);
     loginPage = new _LoginPage2.default(page);
+    await loginPage.checkAndDeleteMagento(config.magentoUsername, config.magentoPassword, config.name);
+    await loginPage.logOutBackend();
+    await loginPage.checkAndDeleteAlpi(config.alpiUsername, config.alpiPassword, config.personalCode);
   });
 
   after(async function () {
@@ -49,7 +52,7 @@ describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST (subscribe.test)", function () {
   describe("1.Create New Customer and test subscription links  ", function () {
     (0, _mochaSteps.step)("Step 1: Create new customer and test if he/she has subscription ", async function () {
       //Make New Customer
-      await loginPage.newCustomer(config.personalCode, config.phoneNumber, config.email);
+      await loginPage.newCustomerConfirmation(config.personalCode, config.phoneNumber, config.email);
       await page.waitForSelector(".box-newsletter");
       await page.goto(config.baseUrl + "/newsletter/manage/");
       await page.waitForSelector("#form-validate");
@@ -80,7 +83,7 @@ describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST (subscribe.test)", function () {
       (0, _chai.expect)(request.subscriptions_newsletter[2].subscription).equal('1');
     });
   });
-  describe("4.Create New Customer and test SaS unsubscribe links  ", function () {
+  describe("3.Create New Customer and test SaS unsubscribe links  ", function () {
     (0, _mochaSteps.step)("Step 1: Get ALPI ID, construct unsubscribe link and click on unsubscribe", async function () {
       //Get ALPI id for last generated Customer
       var alpiID = await loginPage.getAlpiID(config.magentoUsername, config.magentoPassword, config.name);
@@ -99,9 +102,11 @@ describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST (subscribe.test)", function () {
       //Go to ApothekaBeauty SaS unsubscribe link and click unsubscribe
       await page.goto(unsubscribeApothekaBeauty);
       await page.waitForSelector(".layout-unsubscribe.ng-scope");
-      await page.waitAndClick(".btn.ng-binding.primary");
+      await page.waitAndClickTwo(".btn.ng-binding.primary");
       // Go to unsubscribe page
-      await page.goto(config.baseUrl + "/newsletter/manage/");
+      await page.goto(config.baseUrl + "/customer/account/");
+      await page.waitAndClick(".box-newsletter .box-actions span");
+      await page.waitForSelector("#form-validate .choice:nth-child(4) span");
       //Get subscription values
       var subscriptionApotheka = await loginPage.getSubscriptionValue("/html//input[@id='subscription[ApothekaEE]']");
       var subscriptionPetcity = await loginPage.getSubscriptionValue("/html//input[@id='subscription[PetCityEE]']");
@@ -112,7 +117,7 @@ describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST (subscribe.test)", function () {
       (0, _chai.expect)(subscriptionApothekaBeauty).to.be.false;
     });
   });
-  describe("5.Check subscriptions after Unsubscribe from Alpi API", function () {
+  describe("4.Check subscriptions after Unsubscribe from Alpi API", function () {
     //Make Alpi API requests and check subscriptions
     (0, _mochaSteps.step)('Step 1: Check apotheka subscription ', async function () {
       var request = await makePostRequest(config.alpiRequestUrl, config.personalCode);
@@ -130,17 +135,15 @@ describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST (subscribe.test)", function () {
       (0, _chai.expect)(request.subscriptions_newsletter[2].subscription).equal('0');
     });
   });
-  describe("6.Add subscriptions back to user and check", function () {
+  describe("5.Add subscriptions back to user and check", function () {
     (0, _mochaSteps.step)("Step 1: Navigate back to subscripton page and add subscriptions", async function () {
-      var subscriptionApotheka = await loginPage.getSubscriptionValue("/html//input[@id='subscription[ApothekaEE]']");
-      console.log("Subs Apo before " + subscriptionApotheka);
       await page.goto(config.baseUrl + "/newsletter/manage/");
       await page.waitForSelector(".save");
       await page.waitAndClick("#form-validate .choice:nth-child(4) span");
       await page.waitAndClick("#form-validate .choice:nth-child(5) span");
       await page.waitAndClick("#form-validate .choice:nth-child(6) span");
       await page.waitAndClick(".save");
-      await page.waitForSelector("[data-bind='html\: message\.text']");
+      await page.waitForSelector("[data-bind='html\: \$parent\.prepareMessageForHtml\(message\.text\)']");
     });
     (0, _mochaSteps.step)("Step 2: Check if values have changed", async function () {
       await page.goto(config.baseUrl + "/newsletter/manage/");
@@ -148,7 +151,6 @@ describe("NEWSLETTER SUBSCRIBE/UNSUBSCRIBE TEST (subscribe.test)", function () {
       var subscriptionApotheka = await loginPage.getSubscriptionValue("/html//input[@id='subscription[ApothekaEE]']");
       var subscriptionPetcity = await loginPage.getSubscriptionValue("/html//input[@id='subscription[PetCityEE]']");
       var subscriptionApothekaBeauty = await loginPage.getSubscriptionValue("/html//input[@id='subscription[BeautyEE]']");
-      console.log("Subs Apo " + subscriptionApotheka);
       (0, _chai.expect)(subscriptionApotheka).to.be.true;
       (0, _chai.expect)(subscriptionPetcity).to.be.true;
       (0, _chai.expect)(subscriptionApothekaBeauty).to.be.true;

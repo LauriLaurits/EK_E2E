@@ -24,7 +24,8 @@ describe("SHOP FLOW FOR GUEST BUYING OTC PRODUCT (shopFlowOTC.test)", () => {
   describe("1.E2E Shopflow buying OTC products as guest", () => {
     step("Step 1: Adding OTC to Cart from detailview", async () => {
       await page.goto(
-        "https://www.staging.apotheka.ee/smecta-suukaudse-susp-pulber-3g-n10-pmm0010809ee",{ waitUntil: 'networkidle0'});
+        "https://www.staging.apotheka.ee/acic-200-tbl-200mg-n25-pmm0146782ee",{ waitUntil: 'networkidle0'});
+      await loginPage.closeCookie();
       await homepage.navigation();
       await page.waitAndClick(".btn-addtocart");
       await page.clickHelp(".popup-content .control > .input-text");
@@ -35,14 +36,14 @@ describe("SHOP FLOW FOR GUEST BUYING OTC PRODUCT (shopFlowOTC.test)", () => {
       await page.waitForSelector(".item-info");
       expect(await page.getText(".subtotal")).not.to.equal("0.00 €");
       await page.waitForSelector(".item-info .product-item-name");
-      expect(await page.getText(".item-info .product-item-name")).to.include("SMECTA");
+      expect(await page.getText(".item-info .product-item-name")).to.include("ACIC");
       await page.waitAndClick(".primary.checkout");
       await page.waitForSelector("#checkout-root");
       expect(await page.url()).to.equal("https://www.staging.apotheka.ee/fast/checkout/index/");
   });
   step("Step 2: React checkout choose shipping method and fill necessary fields", async () => {
     // Choose Smartpost pakiautomaat
-    await page.clickHelp("[class] li:nth-of-type(5) div span");
+    await page.clickHelp("[class] li:nth-of-type(2) a");
     //Get Order number
     await page.waitForSelector(".summary-title");
     //const orderNumber = await page.getText(".summary-title");
@@ -74,14 +75,15 @@ describe("SHOP FLOW FOR GUEST BUYING OTC PRODUCT (shopFlowOTC.test)", () => {
     //Terms and conditions close
     await page.waitAndClick(".overlay-focusview-scroller .text");
     //Councelling Yes
-    await page.waitAndClick(".radio-with-label-label");
+    await page.waitAndClick("[class] .radio-with-label:nth-of-type(1) .radio-with-label-label");
     //LHV Payment
-    await page.waitAndClick("li:nth-of-type(10) > button > .banklinks-item-label");
+    await page.waitAndClick("li:nth-of-type(14) > button > .banklinks-item-image");
   });
   step("Step 5: Maksekeskuse test environment", async () => {
     //Wait for maksekeskus
     //Wait for maksekeskus confirmation
     await page.waitAndClick(".btn-success");
+    //Back to merchant
     await page.waitAndClick(".btn-success");
     //Wait for success page
     await page.waitForSelector(".checkout-success");

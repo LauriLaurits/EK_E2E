@@ -180,6 +180,14 @@ var Builder = function () {
       await this.page.waitForFunction(document.getElementById(selector).value != value);
       return true;
     }
+  }, {
+    key: "detectUrl",
+    value: async function detectUrl(message) {
+      var urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
+      //const response = JSON.parse(JSON.stringify(message));
+      return message.match(urlRegex);
+      //return ;
+    }
   }]);
 
   return Builder;
