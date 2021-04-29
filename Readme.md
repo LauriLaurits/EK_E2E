@@ -1,8 +1,8 @@
-# EK automated test
+# EK tests Puppeteer/Mocha/Chai/Jest
 ## Getting Started
 First clone the repo, Open terminal and: 
 ```
-git clone https://github.com/LauriLaurits/puppeteer_ek.git
+git clone https://github.com/LauriLaurits/puppeteer_course_ek.git
 ```
 cd into puppeteer_ek folder and run 
 ```
