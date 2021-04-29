@@ -7,6 +7,7 @@ git clone https://github.com/LauriLaurits/puppeteer_course_ek.git
 cd into puppeteer_ek folder and run 
 ```
 npm install
+npm install -g puppeteer@^4.0.1 --save-dev
 ```
 Now for building/deleting tests from build folder:
 ```
