@@ -2,7 +2,7 @@
 ## Getting Started
 First clone the repo, Open terminal and: 
 ```
-git clone https://github.com/LauriLaurits/puppeteer_course_ek.git
+git clone https://upitechlaurilaurits@bitbucket.org/upitech/ekaubamaja-e2e.git
 ```
 cd into puppeteer_ek folder and install dependencies
 ```
