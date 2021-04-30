@@ -13,7 +13,7 @@ module.exports = {
     //Mobile ID personalcode and phoneNumber for testing New Customer
     personalCode: '60001017716',
     phoneNumber: '69100366',
-    email: 'tedino4392@sumwan.com',
+    email: 'bomabe4258@goqoez.com',
     name: 'ONE TESTNUMBER',
     personalCodeLogin: '60001019906',
     phoneNumberLogin: '00000766',
@@ -24,7 +24,7 @@ module.exports = {
     //SmartID
     smartId: '37512122711',
     //SaS Smaily Unsubscribe
-    alpiUnsubscribeUrl: 'https://staging-sas.upitech.ee/#/unsubscribe?email=tedino4392@sumwan.com&alpiCustomerId=',
+    alpiUnsubscribeUrl: 'https://staging-sas.upitech.ee/#/unsubscribe?email=bomabe4258@goqoez.com&alpiCustomerId=',
     //alpiUnsubscribeUrl: 'https://prelive-sas.apotheka.ee/#/unsubscribe?email=pimogam614@synevde.com&alpiCustomerId=',
     //Progress Requests
     requestUrlProgress: "https://devapi.cito.ee/orderapi/rest/service/products/1/56662?filter[aptcode]=",

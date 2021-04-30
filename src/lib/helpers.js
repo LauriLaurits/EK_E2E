@@ -28,7 +28,7 @@ export async function makeGetRequest(requestUrl,productCode) {
 export async function createEmail() {
     const options = {
         method: 'GET',
-        url: 'https://privatix-temp-mail-v1.p.rapidapi.com/request/mail/id/7eefafbf9f8dcad126e63b2d8b2bd214/',
+        url: 'https://privatix-temp-mail-v1.p.rapidapi.com/request/mail/id/984345adf1e3e3dee6d22080f6e2ed5e/',
         headers: {
           'x-rapidapi-key': '981b37a432mshd6d35f4ee5bdb3cp1fe56bjsne8c0169b1d5a',
           'x-rapidapi-host': 'privatix-temp-mail-v1.p.rapidapi.com'

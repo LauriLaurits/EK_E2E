@@ -4,7 +4,7 @@ First clone the repo, Open terminal and:
 ```
 git clone https://github.com/LauriLaurits/puppeteer_course_ek.git
 ```
-cd into puppeteer_ek folder and run 
+cd into puppeteer_ek folder and install dependencies
 ```
 npm install
 npm install -g puppeteer@^4.0.1 --save-dev
